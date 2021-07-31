@@ -1,0 +1,31 @@
+.footer{
+    margin-top: 20px;
+    background-color: #17172F;
+    height: 100px;
+    
+  }
+  .footer-l{
+      float: left;
+      
+  }
+  .footer-r{
+      float: right;
+  }
+  .footer-link{
+      font-size: 0;
+      width: 30px;
+      height: 30px;
+      display: inline-block;
+      opacity: 0.6;
+      transition: all .3s;
+      margin-left: 20px;
+  }
+  .footer-link:hover{
+      opacity: 1;
+  }
+  .footer-link-twitter{
+      background: url('../../assets/images/twitter.png');
+  }
+  .footer-link-telegram{
+      background: url('../../assets/images/telegram.png');
+  }
