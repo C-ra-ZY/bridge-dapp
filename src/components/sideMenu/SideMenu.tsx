@@ -1,9 +1,7 @@
 import React from 'react'
 import styles from './SideMenu.module.css'
 import { Layout, Menu } from 'antd';
-import {
-  HomeOutlined
-} from '@ant-design/icons';
+import { HomeOutlined} from '@ant-design/icons';
 
 export const SideMenu: React.FC = () => {
 	return (

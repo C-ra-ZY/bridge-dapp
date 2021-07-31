@@ -33,6 +33,16 @@ body {
   color: #fff!important;
   
 }
+.ant-form-item-explain, .ant-form-item-extra{
+  color: #B5B4C3 !important;
+}
+
+.ant-select-selection-placeholder{
+  
+}
+.ant-select-item-option-content .ant-image,
+.ant-select-selection-item .ant-image,
+.ant-select-selection-placeholder .ant-image{vertical-align:middle;width: 20px;margin-right: 5px;}
 
 
 code {
