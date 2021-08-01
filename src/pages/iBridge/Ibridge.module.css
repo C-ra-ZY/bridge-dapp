@@ -1,0 +1,36 @@
+
+
+
+.introduce-title{
+  color: #ffffff !important;
+}
+.desc{
+  font-size: 14px;
+font-family: Montserrat-Regular, Montserrat;
+font-weight: 400;
+color: #B5B4C3;
+line-height: 24px;
+margin-bottom: 20px;
+display: block;
+}
+.btnlink{
+  text-align: left;
+  color: #663EE6;
+  padding: 0;
+}
+.btnlink:hover,.btnlink:focus,.btnlink:active{
+  color:#7254d4;
+}
+.content-main{
+  border-left: 1px solid #4B4B63;
+  height: 100%;
+  padding-left: 15px;
+}
+.main-form label,
+.formitem{
+  color: #fff !important;
+}
+.select-icon{
+  width: 18px;
+  margin-top: -4px;  
+}

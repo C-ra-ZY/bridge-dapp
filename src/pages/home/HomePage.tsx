@@ -1,9 +1,23 @@
 import React from 'react'
+import { Header, SideMenu, Footer } from '../../components'
+import { Col, Row} from 'antd';
+
 
 export const HomePage: React.FC = () => {
-    return (
-        <div>
-            Homepage
-        </div>
-    )
+	return (
+		<>
+			<Header />
+			<div className="continer">
+				<Row className="main">
+					<Col span={5}>
+						<SideMenu />
+					</Col>
+					<Col span={19}>
+						<div className="content-wrap">HomePage</div>						
+					</Col>
+				</Row>
+			</div>
+			<Footer />
+		</>
+	)
 }
