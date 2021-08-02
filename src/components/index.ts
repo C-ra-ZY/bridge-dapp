@@ -1,4 +1,5 @@
 export * from './header'
+export * from './headerWallet'
 export * from './sideMenu'
-export * from './sideMenu'
+export * from './connectWallet'
 export * from './footer'

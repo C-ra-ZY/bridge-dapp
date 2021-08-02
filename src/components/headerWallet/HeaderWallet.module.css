@@ -1,0 +1,44 @@
+.mask{
+    background: rgba(0,0,0,0.4) !important;
+    z-index: 10;
+    height: 100vh;
+    position: fixed;
+    width: 100vw;
+    left: 0;
+    top:0;
+}
+.account-wallet-wrap{
+    margin-right: 10px;
+}
+.walletAddress{
+    padding: 0 10px;
+    color: #fff;
+}
+.btn-account-wallet,.btn-account-wallet:hover,.btn-account-wallet:active,.btn-account-wallet:focus{
+   
+    height: 40px;
+    background-color: #0C0C26;
+    border: none;
+    color: #ffffff;
+    position: relative;
+    z-index: 9999;
+}
+
+.account-wallet-wrap .ant-select-item-option-content{
+    display: none!important;
+}
+
+.coinImg{
+    background: url('../../assets/images/coin-dfinity-30.png') no-repeat;
+    vertical-align: middle;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+}
+.formitem label{
+    color: #fff !important;
+}
+.formtitle,.formtext{
+    color: #fff !important;
+}

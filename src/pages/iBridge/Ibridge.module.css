@@ -34,3 +34,80 @@ display: block;
   width: 18px;
   margin-top: -4px;  
 }
+
+.main-form .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border: 1px solid #4B4B63 !important;
+    background: #17172F;
+}
+
+.btnAddNetwrol,.btnAddNetwrol:hover,.btnAddNetwrol:focus{
+    background: #663EE6;
+    color: #ffffff;
+    height: 24px;
+    border: none;
+}
+
+.addbtn,.addbtn:focus{
+    border:none;
+    background: none;
+    width: 24px;height: 24px;
+    padding: 0;
+    font-size: 20px;
+    color: #fff;
+    vertical-align: middle;
+    line-height: 24px;
+}
+.btnmax,.btnmax:hover{
+    color: #ffffff;
+    background: #663EE6;
+    border-radius: 16px;
+    height: 20px;
+    line-height: 19px;
+    font-size: 12px;
+    border: none;
+}
+.addbtn:hover{
+    color: #663EE6;
+    background: none;
+}
+
+.btn-cdw,.btn-cdw:active{
+    background: #28AC43;
+    border: none;
+}
+.btn-cdw:hover,.btn-cdw:focus{
+    background: #37dd58;
+}
+
+.btn-icptoiicp,.btn-icptoiicp:active{
+    background: #663EE6;
+    border: none;
+}
+.btn-icptoiicp:hover,.btn-icptoiicp:focus{
+    background: #7c74f3;
+}
+
+.btn-approving,.btn-approving:active{
+    background: #3E62E6;
+    border: none;
+}
+.btn-approving:hover,.btn-approving:focus{
+    background: #3eb1e6;
+}
+
+
+.btn-error,.btn-error:active,.btn-error:hover,.btn-error:focus{
+    background: #0C0C26;
+    color: #E63E3E;
+    border: none;
+    cursor: default;
+}
+.btn-gray,.btn-gray:active,.btn-gray:hover,.btn-gray:focus{
+    background: #0C0C26;
+    color: #4B4B63;
+    border: none;
+    cursor: default;
+}
+
+
+
