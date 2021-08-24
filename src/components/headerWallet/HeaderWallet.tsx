@@ -1,37 +1,58 @@
-
 import styles from './HeaderWallet.module.css'
-import React, { useState } from 'react'
-import { Button, Popconfirm, Typography, Skeleton,Row, Col } from 'antd'
+import React, { useState, useEffect, useContext } from 'react'
+import { Button, Popconfirm, Typography, Skeleton, Row, Col, message } from 'antd'
 import { DownOutlined } from '@ant-design/icons';
+import Copy from 'copy-to-clipboard';
+import { IconFont } from '../icons';
+import { LoginContext } from '../../App';
+const formtaddress = (walletAddress) => {
+	return (
+		walletAddress.slice(0, 5) + "..." + walletAddress.slice(-5)
+	)
+}
 export const HeaderWallet: React.FC = () => {
+	let { setIsLogin } = useContext<any>(LoginContext);
 	const [data, setdata] = useState(0)
-	const [showmask, setshowmask] = useState(false)
+	const [isShow, setIsShow] = useState(false)
+	const [walletAddress, setWalletAddress] = useState('');
+	useEffect(() => {
+		let address = localStorage.getItem('walletAddress') || '';
+		address === '' ? setIsLogin(false) : setWalletAddress(address)
+	}, [walletAddress, setIsLogin])
 
 	const content = () => {
-
 		return <div style={{ width: "400px" }} className="connectWalletWrap">
 			{data ? <>
 				<Row gutter={24}>
 					<Col span={20}><Typography.Title level={4} className={styles.formtitle}>Connect wallet</Typography.Title></Col>
-					<Col span={4} style={{textAlign:'right'}}><Button size='small'>X</Button></Col>
-				</Row>
-				<Row gutter={24}>
-				<Col span={18}><Typography.Text className={styles.formtext}>Connect with MetaMask</Typography.Text></Col>
-				<Col span={6} style={{textAlign:'right'}}><Button size='small'>Change</Button></Col>
-				</Row>
-				<Row>
-					<Col>
-					<i className={styles.coinImg}></i>
-					<span className={styles.walletAddress}>0xAAE67…dbAC</span>
+					<Col span={4} style={{ textAlign: 'right' }}>
+						<Button size='small' className={styles['btn-close']} onClick={() => {
+							setIsShow(!isShow)
+						}}>
+							<IconFont type="icon-baseline-close-px" />
+						</Button>
 					</Col>
 				</Row>
-				
-
+				<Row gutter={24} style={{ paddingTop: '20px', paddingBottom: '15px', }}>
+					<Col span={18}><Typography.Text className={styles.formtext}>Connect with MetaMask</Typography.Text></Col>
+					<Col span={6} style={{ textAlign: 'right' }}><Button size='small' title="change wallet" className={styles['btn-change']}>Change</Button></Col>
+				</Row>
+				<Row gutter={24}>
+					<Col span={24}>
+						<i className={styles.coinImg}></i>
+						<span className={styles.walletAddress}>{formtaddress(walletAddress)}</span>
+						<Button size='small' title="upload" className={styles.btnoption}><IconFont type="icon-upload" /></Button>
+						<Button size='small' title="copy" className={styles.btnoption} onClick={() => {
+							Copy(walletAddress)
+							message.success("Copied to the clipboard");
+						}}><IconFont type="icon-copy" /></Button>
+					</Col>
+				</Row>
 			</>
 				: <Skeleton active />}
 		</div >
-
 	}
+
 	return (
 		<div className={styles['account-wallet-wrap']}>
 			<Popconfirm
@@ -39,19 +60,17 @@ export const HeaderWallet: React.FC = () => {
 				placement="bottomRight"
 				title={content}
 				color="#17172F"
+				visible={isShow}
 				onVisibleChange={() => {
-					setshowmask(!showmask)
+					setIsShow(!isShow)
 				}}
 			>
-				<Button className={styles['btn-account-wallet']} onClick={() => { setdata(1)}}>
+				<Button className={styles['btn-account-wallet']} onClick={() => { setdata(1) }}>
 					<i className={styles.coinImg}></i>
-					<span className={styles.walletAddress}>0xAAE67…dbAC</span>
+					<span className={styles.walletAddress}>{formtaddress(walletAddress)}</span>
 					<i><DownOutlined /></i>
-					</Button>
-				
-
-
-				<div className={showmask ? `${styles.mask}` : ''}></div>
+				</Button>
+				<div className={isShow ? `${styles.mask}` : ''}></div>
 			</Popconfirm>
 		</div>
 	)

@@ -3,6 +3,25 @@
     border-radius: 5px;
     padding: 15px 10px;
   }
-.menu{
+.ant-menu{
+  background: none;
+}
+.ant-menu-item{
   
+}
+.ant-menu-item:hover{
+  color: #fff!important;
+}
+
+.menu{
+  background: none;
+}
+.menuitem{
+  border-radius: 5px;
+  color: #B5B4C3;
+}
+.menuitem:hover,
+.menuitem.ant-menu-item-selected{
+  background: #663EE6 !important;
+  color: #fff!important;
 }

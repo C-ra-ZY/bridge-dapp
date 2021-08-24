@@ -9,7 +9,10 @@
 /coverage
 
 # production
+/.dfx
 /build
+target/
+Cargo.lock
 
 # misc
 .DS_Store
@@ -21,3 +24,11 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.eslintcache
+.vessel
+
+# IDEs
+/.idea
+/.vscode
+/.history

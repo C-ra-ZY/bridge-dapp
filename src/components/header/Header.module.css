@@ -1,14 +1,8 @@
-@font-face {
-    font-family: "Montserrat-Regular";
-    src: url('../../assets/fonts/montserrat/Montserrat-Regular.otf');
-}
-
 .App-logo {
     pointer-events: none;
     height: 36px;
     line-height: 36px;
     font-size: 24px;
-    font-family: "Montserrat-Regular, Montserrat";
     font-weight: 400;
     color: #FFFFFF;
     background: url('../../assets/images/logo.png') no-repeat left center;
@@ -48,6 +42,4 @@
     color:#FFFFFF ;
     font-size: 16px;
     margin-right: 10px;
-    position: relative;
-    z-index: 9999;
 }

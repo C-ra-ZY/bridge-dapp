@@ -36,20 +36,11 @@ body {
 .ant-menu-inline, .ant-menu-vertical, .ant-menu-vertical-left{
   border-right: 1px solid #17172F;
 }
-.ant-menu{
-  background: none;
-}
-.ant-menu-item{
-  border-radius: 5px;
-  color: #B5B4C3;
-}
-.ant-menu-item:hover{
-  color: #fff!important;
-}
+
+
 .ant-menu-item-selected{
   background: #663EE6 !important;
   color: #fff!important;
-  
 }
 .ant-form-item-explain, .ant-form-item-extra{
   color: #B5B4C3 !important;
@@ -87,11 +78,9 @@ code {
     border: 1px solid #663EE6;
     background: #17172F;
 }
-.ant-select-item-option-select:hover{
+.connectWalletWrap .ant-select-item-option-select:hover{
     color: #663EE6 !important;
 }
-
-
 .connectWalletWrap .ant-input{
     border: 1px solid #4B4B63;
 }

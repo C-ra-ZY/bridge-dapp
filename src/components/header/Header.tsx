@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { ConnectWallet } from '../connectWallet'
 import { HeaderWallet } from '../headerWallet'
 import styles from './Header.module.css'
-import { Layout, Button } from 'antd';
-
+import { Layout,Button } from 'antd';
+import { LoginContext } from '../../App';
 export const Header: React.FC = () => {
+	let {isLogin,icpBalance} = useContext<any>(LoginContext);	
 	return (
 		<Layout.Header className={styles['App-header']}>
 			<div className="continer">
@@ -12,16 +13,22 @@ export const Header: React.FC = () => {
 					<div>
 						<span className={styles['App-logo']}>iBridge</span>
 					</div>
-					<div className={styles['header-right']}>
-						<div style={{paddingTop:'4px'}}><Button type="text" size="large" className={styles.account}>8000.7893 IICP</Button></div>
-						<HeaderWallet />
-						<ConnectWallet />
+					<div className={styles['header-right']}>		
+						{
+							isLogin ? (
+							<>
+								<div style={{ paddingTop: '4px' }}>
+								<Button type="text" size="large" className={styles.account}>{icpBalance} IICP</Button>
+								</div>
+								<HeaderWallet />
+							</>
+							) : (
+								<ConnectWallet />
+							)
+						}
 					</div>
 				</div>
 			</div>
-
 		</Layout.Header>
 	)
 }
-
-

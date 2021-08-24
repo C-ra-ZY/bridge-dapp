@@ -1,25 +1,25 @@
-@font-face {
-    font-family: "Montserrat-Regular";
-    src: url('../../assets/fonts/montserrat/Montserrat-Regular.otf');
-}
-
-
 .btn-connect-wallet {
-    width: 164px;
     height: 40px;
-    background: #663EE6;
+    /* background: #663EE6; */
     border-radius: 4px;
     color: white;
-    border: none;
-    position: relative;
-    z-index: 9999;
+    border: 1px solid #663EE6;
+    background: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-
 .btn-connect-wallet:hover,.btn-connect-wallet:focus,.btn-connect-wallet:active {
     background-color: #7254d4;
+    border: 1px solid #663EE6;
     color: white;
 }
-
+.btn-close{
+    background: none!important;
+    color: #ffffff!important;
+    border:none !important;
+    font-size: 18px !important;
+}
 .mask{
     background: rgba(0,0,0,0.4) !important;
     z-index: 10;
@@ -29,19 +29,33 @@
     left: 0;
     top:0;
 }
+.btn-network,.btn-network:focus{
+    color: #4B4B63;
+    border: 1px solid #4B4B63;
+    width: 250px;
+}
+.btn-network .ant-image-img{
+    opacity: 0.5;
+}
 
-.radios label{
-    background-color: #17172F !important;
-    border-color: #4B4B63;
+.btn-network:hover,.btn-network.active{
+    border-color:#663EE6;
+    color: #fff;
 }
-.radios .ant-radio-button-wrapper:first-child{
-    border-left: 1px solid #4B4B63;
-}
+
 .formitem label{
     color: #fff !important;
 }
 
-.formtitle,.formtext{
+.formtitle{
     color: #fff !important;
 }
 
+.formtext{
+    color:#4B4B63;
+}
+.ctitle{
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

@@ -1,0 +1,1 @@
+export const KEY_LOCALSTORAGE_ACCOUNT = `__local_deland_account`;
