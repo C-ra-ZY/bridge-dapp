@@ -19,7 +19,21 @@ export const HeaderWallet: React.FC = () => {
 		let address = localStorage.getItem('walletAddress') || '';
 		address === '' ? setIsLogin(false) : setWalletAddress(address)
 	}, [walletAddress, setIsLogin])
-
+	
+	let LoginState = localStorage.getItem('LoginState') || '';
+	
+	function MyButton(props) {
+		const LoginState = props.LoginState;
+	   
+	if( LoginState == '1') {
+		return 	<i className={styles.coinImg1}></i>
+	}else {
+		return 	<i className={styles.coinImg}></i>
+		}
+	}
+	function upload(){
+		window.open('https://bscscan.com/address/'+walletAddress+'','_blank');
+	}
 	const content = () => {
 		return <div style={{ width: "400px" }} className="connectWalletWrap">
 			{data ? <>
@@ -39,9 +53,10 @@ export const HeaderWallet: React.FC = () => {
 				</Row>
 				<Row gutter={24}>
 					<Col span={24}>
-						<i className={styles.coinImg}></i>
+						{/* <i className={styles.coinImg}></i> */}
+						<MyButton LoginState={LoginState} />
 						<span className={styles.walletAddress}>{formtaddress(walletAddress)}</span>
-						<Button size='small' title="upload" className={styles.btnoption}><IconFont type="icon-upload" /></Button>
+						<Button size='small' title="upload" className={styles.btnoption} onClick={upload}><IconFont type="icon-upload" /></Button>
 						<Button size='small' title="copy" className={styles.btnoption} onClick={() => {
 							Copy(walletAddress)
 							message.success("Copied to the clipboard");

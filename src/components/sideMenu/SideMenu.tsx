@@ -7,13 +7,13 @@ import { useHistory } from 'react-router-dom'
 
 export const SideMenu: React.FC = () => {
 
-	const [selectKey, setSelectKey] = useState('home');
+	const [selectKey, setSelectKey] = useState('ibridge');
 	const history = useHistory();
 	useEffect(() => {
 		const pathname = history.location.pathname.split('/')[1]
 		setSelectKey(pathname);
 		if (pathname === '') {
-			setSelectKey('home');
+			setSelectKey('ibridge');
 		} else {
 			setSelectKey(pathname);
 		}

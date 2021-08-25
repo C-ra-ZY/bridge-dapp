@@ -15,6 +15,7 @@ function App() {
 				setIcpBalance(icpBalance)
 				setIsLogin(true)
 			}
+			
 		}
 		initLoginState()
 	}, [isLogin])
@@ -23,7 +24,7 @@ function App() {
 		<div className="App">
 			<BrowserRouter>
         <Switch>
-          <Route exact path="/" component={HomePage} />
+          <Route exact path="/" component={Ibridge} />
           <Route exact path="/home" component={HomePage} />
           <Route exact path="/ibridge" component={Ibridge} />
           <Route render={() => 

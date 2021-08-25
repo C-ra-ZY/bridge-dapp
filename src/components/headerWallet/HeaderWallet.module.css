@@ -27,6 +27,14 @@
 }
 
 .coinImg{
+    background: url('../../assets/images/metamsk_30.png') no-repeat;
+    vertical-align: middle;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+}
+.coinImg1{
     background: url('../../assets/images/coin-dfinity-30.png') no-repeat;
     vertical-align: middle;
     display: inline-block;

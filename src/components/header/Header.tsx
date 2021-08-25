@@ -6,6 +6,20 @@ import { Layout,Button } from 'antd';
 import { LoginContext } from '../../App';
 export const Header: React.FC = () => {
 	let {isLogin,icpBalance} = useContext<any>(LoginContext);	
+	
+	let BnbBalance = localStorage.getItem('BnbBalance') || '';
+	let LoginState = localStorage.getItem('LoginState') || '';
+	function MyButton(props) {
+	
+	const LoginState = props.LoginState;
+	if( LoginState == '1') {
+		return 	<Button type="text" size="large" className={styles.account}>{icpBalance} IICP</Button>
+	
+	}else {
+		return 	<Button type="text" size="large" className={styles.account}>{BnbBalance} BNB</Button>
+	
+		}
+	}
 	return (
 		<Layout.Header className={styles['App-header']}>
 			<div className="continer">
@@ -18,7 +32,7 @@ export const Header: React.FC = () => {
 							isLogin ? (
 							<>
 								<div style={{ paddingTop: '4px' }}>
-								<Button type="text" size="large" className={styles.account}>{icpBalance} IICP</Button>
+								 <MyButton LoginState={LoginState} />
 								</div>
 								<HeaderWallet />
 							</>

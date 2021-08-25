@@ -11,7 +11,9 @@ import { AuthClient } from "@dfinity/auth-client";
 import { actorFactory } from '../../utils/canisters/actorFactory'
 import { getAccountId } from "../../utils/plug-controller/utils/account";
 import ledgerIDLFactory from "../../utils/ledger.did";
+import Web3 from 'web3'
 const CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+declare const window: any;
 
 export const ConnectWallet: React.FC = () => {
 	let { setIsLogin } = useContext<any>(LoginContext);
@@ -41,7 +43,24 @@ export const ConnectWallet: React.FC = () => {
 				},
 			})
 		} else {
-			console.log('connect bsc');
+			const Web3 = require('web3');
+			const web3 = new Web3('https://bsc-dataseed1.binance.org:443');
+					
+			const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+			const data = [{
+				 chainId: '0x38'
+			}]
+			await ethereum.request({method: 'wallet_switchEthereumChain', params:data})
+			localStorage.setItem("walletAddress", accounts[0]);
+			await web3.eth.getBalance(accounts[0]).then(function (BNB){
+			
+				let num: number =  Number(web3.utils.fromWei(BNB, 'ether')) 
+				let str: string = num.toFixed(4);
+				localStorage.setItem("BnbBalance", str)
+				localStorage.setItem("LoginState", '0')
+			});
+			setLoadings(false)
+			setIsLogin(true)
 		}
 	}
 
