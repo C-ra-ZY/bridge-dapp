@@ -81,7 +81,8 @@ export const HeaderWallet: React.FC = () => {
 				}}
 			>
 				<Button className={styles['btn-account-wallet']} onClick={() => { setdata(1) }}>
-					<i className={styles.coinImg}></i>
+					{/* <i className={styles.coinImg}></i> */}
+					<MyButton LoginState={LoginState} />
 					<span className={styles.walletAddress}>{formtaddress(walletAddress)}</span>
 					<i><DownOutlined /></i>
 				</Button>

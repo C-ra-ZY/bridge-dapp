@@ -38,6 +38,7 @@ export const ConnectWallet: React.FC = () => {
 					 localStorage.setItem("walletAddress", identity.getPrincipal().toText());
 					 const icpBalance:string = String(parseInt(blance.e8s.toString(), 10).toFixed(3));
 					 localStorage.setItem("icpBalance", icpBalance)
+					 localStorage.setItem("LoginState", '1')
 					 setLoadings(false)
 					setIsLogin(true)
 				},

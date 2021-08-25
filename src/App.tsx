@@ -14,6 +14,12 @@ function App() {
 				let icpBalance:string = String(localStorage.getItem('icpBalance')) || '';
 				setIcpBalance(icpBalance)
 				setIsLogin(true)
+				// let LoginState = localStorage.getItem('LoginState') || '';
+				// if(LoginState == '1'){
+					
+				// }else{
+				// 	setIsLogin(true)
+				// }
 			}
 			
 		}
