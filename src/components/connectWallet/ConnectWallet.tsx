@@ -6,11 +6,7 @@ import styles from './ConnectWallet.module.css'
 import { Button, Popconfirm, Skeleton, Form, Typography, Image, Row, Col } from 'antd';
 import { IconFont } from '../icons';
 import { LoginContext } from '../../App';
-import { _SERVICE as ledgerActor }from "../../utils/plug-controller/interfaces/ledger";
-import { AuthClient } from "@dfinity/auth-client";
-import { actorFactory } from '../../utils/canisters/actorFactory'
-import { getAccountId } from "../../utils/plug-controller/utils/account";
-import ledgerIDLFactory from "../../utils/ledger.did";
+import { Conncteii } from '../../utils/Conncteii';
 import Web3 from 'web3'
 const CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 declare const window: any;
@@ -24,25 +20,11 @@ export const ConnectWallet: React.FC = () => {
 
 	const handleConnect = async () => {
 		if (curNetwork === 'dfinity') {
-			const authClient = await AuthClient.create();
 			setLoadings(true)
-			await authClient.login({
-				// maxTimeToLive: BigInt("0x7f7f7f7f7f"),
-				// identityProvider:"http://localhost:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai",
-				onSuccess: async () => {
-					const identity = await authClient.getIdentity();
-					const accountId = getAccountId(identity.getPrincipal())
-					actorFactory.authenticateActor(identity)				
-					const ibActor = await actorFactory.createActor<ledgerActor>(ledgerIDLFactory, CANISTER_ID, identity)
-				 	const blance = await ibActor.account_balance_dfx({ account: accountId });
-					 localStorage.setItem("walletAddress", identity.getPrincipal().toText());
-					 const icpBalance:string = String(parseInt(blance.e8s.toString(), 10).toFixed(3));
-					 localStorage.setItem("icpBalance", icpBalance)
-					 localStorage.setItem("LoginState", '1')
-					 setLoadings(false)
-					setIsLogin(true)
-				},
-			})
+			Conncteii().then(() => {
+				setIsLogin(true)
+				setLoadings(false)
+			});
 		} else {
 			const Web3 = require('web3');
 			const web3 = new Web3('https://bsc-dataseed1.binance.org:443');

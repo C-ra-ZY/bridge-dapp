@@ -89,3 +89,6 @@
 
 .seloption{ background: #0C0C26 !important; color: #fff !important; }
 .seloption:hover{color: #663EE6 !important;}
+.form-extra-text{
+    padding-top: 7px;
+}

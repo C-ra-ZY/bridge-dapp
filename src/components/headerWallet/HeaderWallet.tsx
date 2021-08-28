@@ -5,6 +5,7 @@ import { DownOutlined } from '@ant-design/icons';
 import Copy from 'copy-to-clipboard';
 import { IconFont } from '../icons';
 import { LoginContext } from '../../App';
+import { Conncteii } from '../../utils/Conncteii'
 const formtaddress = (walletAddress) => {
 	return (
 		walletAddress.slice(0, 5) + "..." + walletAddress.slice(-5)
@@ -15,24 +16,35 @@ export const HeaderWallet: React.FC = () => {
 	const [data, setdata] = useState(0)
 	const [isShow, setIsShow] = useState(false)
 	const [walletAddress, setWalletAddress] = useState('');
+	const handleShare = () => {
+		window.open("https://ic.rocks/account/" + walletAddress)
+	}
+
+	const changeConnect = () => {
+		setIsLogin(false)
+		Conncteii().then(() => {
+			setIsLogin(true)
+		});
+	}
+
 	useEffect(() => {
 		let address = localStorage.getItem('walletAddress') || '';
 		address === '' ? setIsLogin(false) : setWalletAddress(address)
 	}, [walletAddress, setIsLogin])
-	
+
 	let LoginState = localStorage.getItem('LoginState') || '';
-	
+
 	function MyButton(props) {
 		const LoginState = props.LoginState;
-	   
-	if( LoginState == '1') {
-		return 	<i className={styles.coinImg1}></i>
-	}else {
-		return 	<i className={styles.coinImg}></i>
+
+		if (LoginState == '1') {
+			return <i className={styles.coinImg1}></i>
+		} else {
+			return <i className={styles.coinImg}></i>
 		}
 	}
-	function upload(){
-		window.open('https://bscscan.com/address/'+walletAddress+'','_blank');
+	function upload() {
+		window.open('https://bscscan.com/address/' + walletAddress + '', '_blank');
 	}
 	const content = () => {
 		return <div style={{ width: "400px" }} className="connectWalletWrap">
@@ -49,14 +61,20 @@ export const HeaderWallet: React.FC = () => {
 				</Row>
 				<Row gutter={24} style={{ paddingTop: '20px', paddingBottom: '15px', }}>
 					<Col span={18}><Typography.Text className={styles.formtext}>Connect with MetaMask</Typography.Text></Col>
-					<Col span={6} style={{ textAlign: 'right' }}><Button size='small' title="change wallet" className={styles['btn-change']}>Change</Button></Col>
+					<Col span={6} style={{ textAlign: 'right' }}>
+						<Button size='small' title="change wallet" className={styles['btn-change']} onClick={() => {
+							changeConnect()
+						}}>Change</Button>
+					</Col>
 				</Row>
 				<Row gutter={24}>
 					<Col span={24}>
 						{/* <i className={styles.coinImg}></i> */}
 						<MyButton LoginState={LoginState} />
 						<span className={styles.walletAddress}>{formtaddress(walletAddress)}</span>
-						<Button size='small' title="upload" className={styles.btnoption} onClick={upload}><IconFont type="icon-upload" /></Button>
+						<Button size='small' title="rocks" className={styles.btnoption} onClick={() => {
+							handleShare()
+						}}><IconFont type="icon-upload" /></Button>
 						<Button size='small' title="copy" className={styles.btnoption} onClick={() => {
 							Copy(walletAddress)
 							message.success("Copied to the clipboard");
