@@ -5,15 +5,15 @@ import styles from './Header.module.css'
 import { Layout,Button } from 'antd';
 import { LoginContext } from '../../App';
 export const Header: React.FC = () => {
-	let {isLogin,icpBalance} = useContext<any>(LoginContext);	
-	
+	let {isLogin} = useContext<any>(LoginContext);	
+	let IcpBalance = localStorage.getItem('IcpBalance') || '';
 	let BnbBalance = localStorage.getItem('BnbBalance') || '';
 	let LoginState = localStorage.getItem('LoginState') || '';
 	function MyButton(props) {
 	
 	const LoginState = props.LoginState;
 	if( LoginState == '1') {
-		return 	<Button type="text" size="large" className={styles.account}>{icpBalance} IICP</Button>
+		return 	<Button type="text" size="large" className={styles.account}>{IcpBalance} IICP</Button>
 	
 	}else {
 		return 	<Button type="text" size="large" className={styles.account}>{BnbBalance} BNB</Button>

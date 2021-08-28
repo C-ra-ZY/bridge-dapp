@@ -6,27 +6,19 @@ import { AuthClient } from "@dfinity/auth-client";
 export const LoginContext = React.createContext<any>(null);
 function App() {
 	const [isLogin, setIsLogin] = useState(false)
-	const [icpBalance, setIcpBalance] = useState('');
+	const [isConnectShow, setIsConnectShow] = useState(false)
+
 	useEffect(() => {
 		const initLoginState = async ()=>{
 			const authClient = await AuthClient.create();
 			if (await authClient.isAuthenticated()) {
-				let icpBalance:string = String(localStorage.getItem('icpBalance')) || '';
-				setIcpBalance(icpBalance)
 				setIsLogin(true)
-				// let LoginState = localStorage.getItem('LoginState') || '';
-				// if(LoginState == '1'){
-					
-				// }else{
-				// 	setIsLogin(true)
-				// }
 			}
-			
 		}
 		initLoginState()
-	}, [isLogin,icpBalance])
+	}, [isLogin])
 	return (
-		<LoginContext.Provider value={{isLogin, setIsLogin ,icpBalance,setIcpBalance}}>
+		<LoginContext.Provider value={{isLogin, setIsLogin ,isConnectShow, setIsConnectShow}}>
 		<div className="App">
 			<BrowserRouter>
         <Switch>

@@ -5,14 +5,13 @@ import { DownOutlined } from '@ant-design/icons';
 import Copy from 'copy-to-clipboard';
 import { IconFont } from '../icons';
 import { LoginContext } from '../../App';
-import { Conncteii } from '../../utils/Conncteii'
 const formtaddress = (walletAddress) => {
 	return (
 		walletAddress.slice(0, 5) + "..." + walletAddress.slice(-5)
 	)
 }
 export const HeaderWallet: React.FC = () => {
-	let { setIsLogin } = useContext<any>(LoginContext);
+	let { setIsLogin,setIsConnectShow } = useContext<any>(LoginContext);
 	const [data, setdata] = useState(0)
 	const [isShow, setIsShow] = useState(false)
 	const [walletAddress, setWalletAddress] = useState('');
@@ -21,10 +20,10 @@ export const HeaderWallet: React.FC = () => {
 	}
 
 	const changeConnect = () => {
+		window.localStorage.clear();
+		setIsShow(false)
 		setIsLogin(false)
-		Conncteii().then(() => {
-			setIsLogin(true)
-		});
+		setIsConnectShow(true)
 	}
 
 	useEffect(() => {
@@ -37,7 +36,7 @@ export const HeaderWallet: React.FC = () => {
 	function MyButton(props) {
 		const LoginState = props.LoginState;
 
-		if (LoginState == '1') {
+		if (LoginState === '1') {
 			return <i className={styles.coinImg1}></i>
 		} else {
 			return <i className={styles.coinImg}></i>
