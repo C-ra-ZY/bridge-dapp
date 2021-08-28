@@ -24,6 +24,7 @@ export const ConnectWallet: React.FC = () => {
 			Conncteii().then(() => {
 				setIsLogin(true)
 				setLoadings(false)
+				localStorage.setItem("LoginState", '1')
 			});
 		} else {
 			const Web3 = require('web3');

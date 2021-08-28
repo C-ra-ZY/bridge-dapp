@@ -24,7 +24,7 @@ function App() {
 			
 		}
 		initLoginState()
-	}, [isLogin])
+	}, [isLogin,icpBalance])
 	return (
 		<LoginContext.Provider value={{isLogin, setIsLogin ,icpBalance,setIcpBalance}}>
 		<div className="App">
