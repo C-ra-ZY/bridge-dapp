@@ -1,25 +1,13 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { ConnectWallet } from '../connectWallet'
 import { HeaderWallet } from '../headerWallet'
 import styles from './Header.module.css'
-import { Layout,Button } from 'antd';
-import { LoginContext } from '../../App';
+import { Layout, Button } from 'antd';
+import { useAuthWallet } from '../../utils/authWallet/AuthWallet';
+
 export const Header: React.FC = () => {
-	let {isLogin} = useContext<any>(LoginContext);	
-	let IcpBalance = localStorage.getItem('IcpBalance') || '';
-	let BnbBalance = localStorage.getItem('BnbBalance') || '';
-	let LoginState = localStorage.getItem('LoginState') || '';
-	function MyButton(props) {
+	let { ...authWallet } = useAuthWallet();
 	
-	const LoginState = props.LoginState;
-	if( LoginState == '1') {
-		return 	<Button type="text" size="large" className={styles.account}>{IcpBalance} IICP</Button>
-	
-	}else {
-		return 	<Button type="text" size="large" className={styles.account}>{BnbBalance} BNB</Button>
-	
-		}
-	}
 	return (
 		<Layout.Header className={styles['App-header']}>
 			<div className="continer">
@@ -27,15 +15,20 @@ export const Header: React.FC = () => {
 					<div>
 						<span className={styles['App-logo']}>iBridge</span>
 					</div>
-					<div className={styles['header-right']}>		
+					<div className={styles['header-right']}>
 						{
-							isLogin ? (
-							<>
-								<div style={{ paddingTop: '4px' }}>
-								 <MyButton LoginState={LoginState} />
-								</div>
-								<HeaderWallet />
-							</>
+							authWallet.isAuthWalletConnected ? (
+								<>
+									<div style={{ paddingTop: '4px' }}>
+										<Button type="text" size="large" className={styles.account} loading={authWallet.amountLoad}>
+											{authWallet.amount}
+											{
+												authWallet.connectWalletType === 'dfinity' ? ' IICP' : ' BNB'
+											}
+										</Button>
+									</div>
+									<HeaderWallet />
+								</>
 							) : (
 								<ConnectWallet />
 							)

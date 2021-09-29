@@ -64,6 +64,11 @@
     background: #7c74f3;
 }
 
+
+.btn-amount-less{
+    background:#0C0C26 !important;
+}
+
 .btn-approving,.btn-approving:active{
     background: #3E62E6;
     border: none;
@@ -72,20 +77,17 @@
     background: #3eb1e6;
 }
 
-
-.btn-error,.btn-error:active,.btn-error:hover,.btn-error:focus{
+.text-error{
     background: #0C0C26;
-    color: #E63E3E;
     border: none;
-    cursor: default;
-}
+} 
+
 .btn-gray,.btn-gray:active,.btn-gray:hover,.btn-gray:focus{
     background: #0C0C26;
     color: #4B4B63;
     border: none;
     cursor: default;
 }
-
 
 .seloption{ background: #0C0C26 !important; color: #fff !important; }
 .seloption:hover{color: #663EE6 !important;}

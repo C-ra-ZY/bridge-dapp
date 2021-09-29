@@ -1,0 +1,70 @@
+type TokenActorType = 
+ variant {
+   dft;
+   ext;
+   undefined;
+ };
+type Time = int;
+type ProposalStatus = 
+ variant {
+   active;
+   cancelled;
+   executed;
+   inactive;
+   passed;
+ };
+type Proposal = 
+ record {
+   proposedTime: Time;
+   status: ProposalStatus;
+   yesVotes: vec nat8;
+   yesVotesTotal: nat8;
+ };
+type DepositRecord = 
+ record {
+   amount: nat;
+   caller: text;
+   depositNonce: nat64;
+   depositer: text;
+   destinationChainID: nat16;
+   fee: nat;
+   recipientAddress: text;
+   resourceID: text;
+   timestamp: Time;
+ };
+type DepositData = 
+ record {
+   amount: nat;
+   recipientAddress: text;
+ };
+type CommonResult = 
+ variant {
+   Err: text;
+   Ok: opt text;
+ };
+type Bridge = 
+ service {
+   _hasVotedOnProposal: (blob, text, text) -> (bool);
+   adminAddRelayer: (text) -> (bool);
+   adminChangeFee: (nat) -> (bool);
+   adminChangeRelayerThreshold: (nat8) -> (bool);
+   adminPauseTransfers: () -> (bool);
+   adminRemoveRelayer: (text) -> (bool);
+   adminSetBurnable: (text, text) -> (CommonResult);
+   adminSetResource: (text, text, text, TokenActorType, nat) ->
+    (CommonResult);
+   adminUnpauseTransfers: () -> (bool);
+   adminWithdraw: (text, text, text, nat) -> (CommonResult);
+   cancelProposal: (nat16, nat64, text) -> (CommonResult);
+   deposit: (text, nat16, DepositData) -> (CommonResult);
+   executeProposal: (nat16, nat64, DepositData, text) -> (CommonResult);
+   getDepositRecord: (text, nat16, nat64) -> (opt DepositRecord);
+   getProposal: (nat16, nat64, text) -> (opt Proposal);
+   grantRole: (text, text) -> (bool);
+   isRelayer: (text) -> (bool);
+   renounceAdmin: (text) -> (bool);
+   totalRelayers: () -> (nat);
+   transferFunds: (vec text, vec nat) -> (CommonResult);
+   voteProposal: (nat16, nat64, text, text) -> (CommonResult);
+ };
+service : (nat16, nat8, nat, nat, principal) -> Bridge

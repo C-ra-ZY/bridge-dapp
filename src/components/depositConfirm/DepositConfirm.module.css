@@ -1,0 +1,83 @@
+.desc{
+  color: #4B4B63;
+  font-size: 14px;
+}
+
+.number,.title{
+  color: #fff;
+}
+
+.modaltitle{
+  text-align: center;
+  color: #fff;
+}
+.btn-wrap{
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+.btn,.btn:active{
+  background: #663EE6;
+  color: #fff;
+  border: none;
+}
+.btn:hover,.btn:focus{
+  background: #7c74f3;
+  color: #fff;
+}
+
+.row{
+  height: 40px;
+  line-height: 40px;
+}
+
+.loading{
+  background: url('../../assets/images/loading.svg') no-repeat center center;
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 10px;
+}
+.loadingdesc{
+  color: #4B4B63;
+  font-size: 12px;
+  text-align: center;
+}
+
+.doneIcon{
+  text-align: center;
+  color: #663EE6;
+  border: #663EE6 solid 1px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  width: 92px;
+  height: 92px;
+  line-height: 80px;
+  font-size: 50px;
+}
+.donedesc{
+  font-size: 16px;
+  text-align: center;
+  color: #663EE6;
+  cursor: pointer;
+}
+
+.result,.loadingwrap{
+  min-height: 200px;
+  padding: 50px 0;
+}
+
+.errorIcon{
+  text-align: center;
+  color: #E63E3E;
+  border: #E63E3E solid 1px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  width: 92px;
+  height: 92px;
+  line-height: 80px;
+  font-size: 50px;
+}
+.errortitle{
+  text-align: center;
+  font-size: 16px;
+  color: #E63E3E;
+}

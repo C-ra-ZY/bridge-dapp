@@ -1,87 +1,83 @@
 import styles from './HeaderWallet.module.css'
-import React, { useState, useEffect, useContext } from 'react'
-import { Button, Popconfirm, Typography, Skeleton, Row, Col, message } from 'antd'
+import React, { useState } from 'react'
+import { Button, Popconfirm, Typography, Row, Col, message } from 'antd'
 import { DownOutlined } from '@ant-design/icons';
 import Copy from 'copy-to-clipboard';
 import { IconFont } from '../icons';
-import { LoginContext } from '../../App';
+import { useAuthWallet } from '../../utils/authWallet/AuthWallet';
 const formtaddress = (walletAddress) => {
-	return (
-		walletAddress.slice(0, 5) + "..." + walletAddress.slice(-5)
-	)
+	if (walletAddress) {
+		return (
+			walletAddress.slice(0, 5) + "..." + walletAddress.slice(-5)
+		)
+	} else {
+		return 'Connect wallet'
+	}
+
 }
 export const HeaderWallet: React.FC = () => {
-	let { setIsLogin,setIsConnectShow } = useContext<any>(LoginContext);
-	const [data, setdata] = useState(0)
+
+	let { ...authWallet } = useAuthWallet();
 	const [isShow, setIsShow] = useState(false)
-	const [walletAddress, setWalletAddress] = useState('');
+
 	const handleShare = () => {
-		window.open("https://ic.rocks/account/" + walletAddress)
+		if (authWallet.connectWalletType === 'dfinityWallet') {
+			window.open(`https://ic.rocks/account/${authWallet.walletAddress}`)
+		} else {
+			window.open(`https://bscscan.com/address/${authWallet.walletAddress}`);
+		}
 	}
 
 	const changeConnect = () => {
 		window.localStorage.clear();
 		setIsShow(false)
-		setIsLogin(false)
-		setIsConnectShow(true)
+		authWallet.setAmount('')
+		authWallet.setAuthWalletConnected(false)
+		authWallet.setConnectPanelVisible(true)
 	}
 
-	useEffect(() => {
-		let address = localStorage.getItem('walletAddress') || '';
-		address === '' ? setIsLogin(false) : setWalletAddress(address)
-	}, [walletAddress, setIsLogin])
-
-	let LoginState = localStorage.getItem('LoginState') || '';
-
-	function MyButton(props) {
-		const LoginState = props.LoginState;
-
-		if (LoginState === '1') {
-			return <i className={styles.coinImg1}></i>
+	function CoinIcon() {
+		if (authWallet.connectWalletType === 'dfinity') {
+			return <i className={styles.coinImgicp}></i>
 		} else {
 			return <i className={styles.coinImg}></i>
 		}
 	}
-	function upload() {
-		window.open('https://bscscan.com/address/' + walletAddress + '', '_blank');
-	}
+
 	const content = () => {
 		return <div style={{ width: "400px" }} className="connectWalletWrap">
-			{data ? <>
-				<Row gutter={24}>
-					<Col span={20}><Typography.Title level={4} className={styles.formtitle}>Connect wallet</Typography.Title></Col>
-					<Col span={4} style={{ textAlign: 'right' }}>
-						<Button size='small' className={styles['btn-close']} onClick={() => {
-							setIsShow(!isShow)
-						}}>
-							<IconFont type="icon-baseline-close-px" />
-						</Button>
-					</Col>
-				</Row>
-				<Row gutter={24} style={{ paddingTop: '20px', paddingBottom: '15px', }}>
-					<Col span={18}><Typography.Text className={styles.formtext}>Connect with MetaMask</Typography.Text></Col>
-					<Col span={6} style={{ textAlign: 'right' }}>
-						<Button size='small' title="change wallet" className={styles['btn-change']} onClick={() => {
-							changeConnect()
-						}}>Change</Button>
-					</Col>
-				</Row>
-				<Row gutter={24}>
-					<Col span={24}>
-						{/* <i className={styles.coinImg}></i> */}
-						<MyButton LoginState={LoginState} />
-						<span className={styles.walletAddress}>{formtaddress(walletAddress)}</span>
-						<Button size='small' title="rocks" className={styles.btnoption} onClick={() => {
-							handleShare()
-						}}><IconFont type="icon-upload" /></Button>
-						<Button size='small' title="copy" className={styles.btnoption} onClick={() => {
-							Copy(walletAddress)
-							message.success("Copied to the clipboard");
-						}}><IconFont type="icon-copy" /></Button>
-					</Col>
-				</Row>
-			</>
-				: <Skeleton active />}
+
+			<Row gutter={24}>
+				<Col span={20}><Typography.Title level={4} className={styles.formtitle}>Connect wallet</Typography.Title></Col>
+				<Col span={4} style={{ textAlign: 'right' }}>
+					<Button size='small' className={styles['btn-close']} onClick={() => {
+						setIsShow(!isShow)
+					}}>
+						<IconFont type="icon-baseline-close-px" />
+					</Button>
+				</Col>
+			</Row>
+			<Row gutter={24} style={{ paddingTop: '20px', paddingBottom: '15px', }}>
+				<Col span={18}><Typography.Text className={styles.formtext}>Connect with MetaMask</Typography.Text></Col>
+				<Col span={6} style={{ textAlign: 'right' }}>
+					<Button size='small' title="change wallet" className={styles['btn-change']} onClick={() => {
+						changeConnect()
+					}}>Change</Button>
+				</Col>
+			</Row>
+			<Row gutter={24}>
+				<Col span={24}>
+					<CoinIcon />
+					<span className={styles.walletAddress}>{formtaddress(authWallet.walletAddress)}</span>
+					<Button size='small' title="rocks" className={styles.btnoption} onClick={() => {
+						handleShare()
+					}}><IconFont type="icon-upload" /></Button>
+					<Button size='small' title="copy" className={styles.btnoption} onClick={() => {
+						Copy(authWallet.walletAddress)
+						message.success("Copied to the clipboard");
+					}}><IconFont type="icon-copy" /></Button>
+				</Col>
+			</Row>
 		</div >
 	}
 
@@ -97,10 +93,9 @@ export const HeaderWallet: React.FC = () => {
 					setIsShow(!isShow)
 				}}
 			>
-				<Button className={styles['btn-account-wallet']} onClick={() => { setdata(1) }}>
-					{/* <i className={styles.coinImg}></i> */}
-					<MyButton LoginState={LoginState} />
-					<span className={styles.walletAddress}>{formtaddress(walletAddress)}</span>
+				<Button className={styles['btn-account-wallet']}>
+					<CoinIcon />
+					<span className={styles.walletAddress}>{formtaddress(authWallet.walletAddress)}</span>
 					<i><DownOutlined /></i>
 				</Button>
 				<div className={isShow ? `${styles.mask}` : ''}></div>
