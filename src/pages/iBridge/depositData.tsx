@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { BridgeConfig } from "../../utils/evmContract/BridgeConfig";
 
 interface DepositTokenInterface {
   fromChain:string,
@@ -13,6 +12,7 @@ interface DepositTokenInterface {
   decimals:any,
   fromChainID:any,
   toChainID:any,
+  toBridgeAddress:string,
   inputAmount:number,
   recipientAddress:string,
   setFromChain:(arg0: string)=>void;
@@ -26,6 +26,7 @@ interface DepositTokenInterface {
   setdecimals:(arg0: any)=>void;
   setFromChainID:(arg0: any)=>void;
   setToChainID:(arg0: any)=>void;
+  setToBridgeAddress:(arg0: any)=>void;
   setInputAmount:(arg0: number)=>void;
   setRecipientAddress:(arg0: string)=>void;
 }
@@ -38,6 +39,7 @@ export function useProvideDepositData() {
   const [symbol, setSymbol] = useState<string>('ICP')
   const [bridgeAddress, setBridgeAddress] = useState<string>('bridgeAddress')
   const [tokenAddress, setTokenAddress] = useState<string>('tokenAddress')
+  const [toBridgeAddress, setToBridgeAddress] = useState<string>('tokenAddress')
   const [decimals, setdecimals] = useState<number>()
   const [fromChainID, setFromChainID] = useState<number>(0)
   const [toChainID, setToChainID] = useState<number>(0)
@@ -56,6 +58,7 @@ export function useProvideDepositData() {
     decimals:decimals,
     fromChainID:fromChainID,
     toChainID:toChainID,
+    toBridgeAddress:toBridgeAddress,
     inputAmount: inputAmount,
     recipientAddress:recipientAddress,
     setFromChain,
@@ -69,6 +72,7 @@ export function useProvideDepositData() {
     setdecimals,
     setFromChainID,
     setToChainID,
+    setToBridgeAddress,
     setInputAmount,
     setRecipientAddress,
   }

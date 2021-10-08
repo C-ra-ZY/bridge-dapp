@@ -7,7 +7,7 @@ export const BridgeConfig = [
     chainName: "dfinity",
     icon: coinDfinity,
     title: 'Dfinity Network',
-    bridgeAddress: "rwlgt-iiaaa-aaaaa-aaaaa-cai",
+    bridgeAddress: "deoht-3aaaa-aaaah-aapsa-cai", //deoht-3aaaa-aaaah-aapsa-cai
     chainID: 2,
     tokens:
       [
@@ -16,7 +16,7 @@ export const BridgeConfig = [
           "symbol": 'ICP',
           "name": 'ICP',
           "icon": coinDfinity,
-          "tokenAddress": 'ryjl3-tyaaa-aaaaa-aaaba-cai' //
+          "tokenAddress": 'e5cvx-dyaaa-aaaai-qatja-cai' //e5cvx-dyaaa-aaaai-qatja-cai
         }
       ]
   },
@@ -24,8 +24,8 @@ export const BridgeConfig = [
     chainName: 'binance',
     icon: coinBinance,
     title: 'Binance Smart Chain',
-    bridgeAddress: "0x59D46a0bbD4ECFe2E90f52C0532585a6537A37B6",
-    chainID: 1,
+    bridgeAddress: "0x959e7e27d6ED8E22e156b12fCbE4da062b6A2aE5",
+    chainID: 97,
     tokens:
       [
         {
@@ -33,22 +33,15 @@ export const BridgeConfig = [
           "symbol": 'IICP',
           "name": 'IICP',
           "icon": coinDfinity,
-          "tokenAddress": '0x700dAEE9222d61805c20465208F1cd91f3495166'
-        },
-        {
-          "decimals": 16,
-          "symbol": 'TEST',
-          "name": 'TEST Nmae',
-          "icon": coinDfinity,
-          "tokenAddress": '0x99998888777744445588777666'
+          "tokenAddress": '0xBa308A2b27Bf65157492B4628b3F50558eeE21be'
         }
       ]
   },
   {
-    chainName:'other',
+    chainName: 'other',
     icon: coinMetamsk,
     title: 'Other Smart Chain',
-    bridgeAddress:"0x3A07ED8Bb58a29C5817C17B08eAB5e01769huobi",
+    bridgeAddress: "0x3A07ED8Bb58a29C5817C17B08eAB5e01769huobi",
     chainID: 3,
     tokens:
       [
@@ -71,7 +64,7 @@ export const BridgeConfig = [
 ]
 
 
-
+/* 
 const fromChain = [
   {
     name: 'dfinity',
@@ -88,4 +81,4 @@ const fromChain = [
 let toChain = [...fromChain.map(r => {
   return Object.assign({}, r)
 })]
-
+ */

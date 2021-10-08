@@ -6,8 +6,7 @@ import { Layout, Button } from 'antd';
 import { useAuthWallet } from '../../utils/authWallet/AuthWallet';
 
 export const Header: React.FC = () => {
-	let { ...authWallet } = useAuthWallet();
-	
+	const { ...authWallet } = useAuthWallet();
 	return (
 		<Layout.Header className={styles['App-header']}>
 			<div className="continer">
@@ -23,7 +22,7 @@ export const Header: React.FC = () => {
 										<Button type="text" size="large" className={styles.account} loading={authWallet.amountLoad}>
 											{authWallet.amount}
 											{
-												authWallet.connectWalletType === 'dfinity' ? ' IICP' : ' BNB'
+												authWallet.connectWalletType === 'dfinity' ? ' ICP' : ' BNB'
 											}
 										</Button>
 									</div>

@@ -3,22 +3,20 @@ import styles from './Ibridge.module.css';
 import { SideMenu, Description, DepositConfirm, ChooseDirection } from '../../components'
 import { Col, Row, Form, Button, Alert, Input, message } from 'antd';
 import { useAuthWallet } from '../../utils/authWallet/AuthWallet';
-import { Deposit } from "../../utils/evmContract/Deposit";
+import { DepositTool } from "../../utils/evmContract/Deposit";
 import { useDepositData } from './depositData';
 
 export const Ibridge: React.FC = () => {
   const { ...authWallet } = useAuthWallet();
-  const { ...mydepositTool } = Deposit();
-  const { calculateFee } = Deposit();
+  const { ...depositTool } = DepositTool();
   const [fee, setFee] = useState<string>('--')
   const [receive, setReceive] = useState<string>('--')
-
+  const [unitDeposite, setUnitDeposite] = useState<string>('ICP');
+  const [unitReceive, setUnitReceive] = useState<string>('IICP');
   const { tokenAddress, inputAmount, decimals, bridgeAddress, recipientAddress, setRecipientAddress, setInputAmount } = useDepositData();
-
   const [approvalState, setApprovalState] = useState<boolean>(false)
   const [approvalLoading, setApprovalLoading] = useState<boolean>(false)
   const [depositConfirmVisible, setDepositConfirmVisible] = useState<boolean>(false)
-
   const [depositError, setDepositError] = useState<boolean>(false)
 
   const [dfinityBtn, setDfinityBtn] = useState({
@@ -26,13 +24,27 @@ export const Ibridge: React.FC = () => {
     className: 'btn-cdw'
   })
 
+  useEffect(() => {
+    if (authWallet.connectWalletType === 'dfinity') {
+      setUnitDeposite('ICP')
+      setUnitReceive('IICP')
+    } else {
+      setUnitDeposite('IICP')
+      setUnitReceive('ICP')
+    }
+
+  }, [authWallet.connectWalletType])
+
   const handleDfinityBtnClick = async () => {
     if (!authWallet.isAuthWalletConnected) {
       authWallet.setConnectPanelVisible(true)
     } else {
       if (recipientAddress === '') {
         alert('The Destination Address is empty')
+      } else if (!inputAmount || inputAmount == 0) {
+        alert('Amount is empty')
       } else {
+        console.log('inputAmount', inputAmount)
         setDepositConfirmVisible(true)
       }
     }
@@ -41,11 +53,10 @@ export const Ibridge: React.FC = () => {
   const handleApproval = () => {
     if (!approvalState) {
       setApprovalLoading(true)
-      mydepositTool.erc20Approval(bridgeAddress, tokenAddress, inputAmount, decimals).then(async (approveRes: any) => {
+      depositTool.erc20Approval(bridgeAddress, tokenAddress, inputAmount, decimals).then(async (approveRes: any) => {
         console.log(approveRes)
         try {
           if (approveRes.hash) {
-
             setApprovalState(true)
             setApprovalLoading(false)
             // await authWallet.getPlugAssets()
@@ -67,6 +78,8 @@ export const Ibridge: React.FC = () => {
     } else {
       if (recipientAddress === '') {
         alert('The Destination Address is empty')
+      } else if (!inputAmount || inputAmount == 0) {
+        alert('Amount is empty')
       } else {
         setDepositConfirmVisible(true)
       }
@@ -95,10 +108,23 @@ export const Ibridge: React.FC = () => {
     } else {
       if (e) setInputAmount(parseFloat(e))
     }
-    let getfee = calculateFee(useInputAmount) || 0;
+    let getfee = depositTool.calculateFee(useInputAmount) || 0;
     let receive = useInputAmount - getfee || 0;
     setFee(getfee.toString());
     setReceive(receive.toString());
+  }
+
+  const claimTestToken = () => {
+
+    depositTool.claimTestToken().then(async (claimTestTokenRes: any) => {
+      console.log('claimTestToken', claimTestTokenRes)
+      if(claimTestTokenRes.hash){
+        message.success('success');
+      }
+    }).catch(err => {
+      console.log(err)
+      message.error('error')
+    })
   }
 
   return (
@@ -110,7 +136,10 @@ export const Ibridge: React.FC = () => {
         <Col span={19}>
           <Row className="content-wrap">
             <Col span={6}>
-              <Description />
+              <Description /><br />
+              <Button size="small" className={styles['btnAddNetwrol']} onClick={() => {
+                claimTestToken();
+              }}>ClaimTestToken</Button>
             </Col>
             <Col span={18}>
 
@@ -119,9 +148,9 @@ export const Ibridge: React.FC = () => {
                   <ChooseDirection />
 
                   <Form.Item label="Amount" extra={
-                    <div className={styles['form-extra-text']}>The minimum amount is 1.0000 ICP
+                    <div className={styles['form-extra-text']}>The minimum amount is 1.0000 {unitDeposite}
                       <span style={{ float: 'right' }}>
-                        Fee: {fee} ICP | Receive: {receive} IICP
+                        Fee: {fee} {unitDeposite} | Receive: {receive} {unitReceive}
                       </span></div>
                   }>
                     <Input placeholder="1.0000" type='number' value={inputAmount} onChange={e => {
@@ -211,6 +240,8 @@ export const Ibridge: React.FC = () => {
                 fee={fee}
                 receive={receive}
                 visible={depositConfirmVisible}
+                unitDeposite={unitDeposite}
+                unitReceive={unitReceive}
                 resetApprovalState={() => setApprovalState(false)}
                 hide={() => setDepositConfirmVisible(false)}
               />

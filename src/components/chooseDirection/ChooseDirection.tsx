@@ -10,46 +10,46 @@ const { Option } = Select;
 declare const window: any;
 export const ChooseDirection: React.FC = () => {
   let { ...authWallet } = useAuthWallet();
-  const { ...useData } = useDepositData();
+  const { ...useDatas } = useDepositData();
 
 
   useEffect(() => {
     const initData = () => {
-      useData.setFromChainList(BridgeConfig)
-      useData.setToChainList(BridgeConfig.filter(item => item.chainName !== useData.fromChain))
-      useData.setBridgeAddress(BridgeConfig.find(item => item.chainName === useData.fromChain)?.bridgeAddress)
-      useData.setFromChainID(BridgeConfig.find(item => item.chainName === useData.fromChain)?.chainID)
-      useData.setToChainID(BridgeConfig.find(item => item.chainName === useData.toChain)?.chainID)
-      useData.setTokens(BridgeConfig.find(item => item.chainName === useData.fromChain)?.tokens)
-      useData.setdecimals(BridgeConfig.find(item => item.chainName === useData.fromChain)?.tokens[0].decimals)
-      useData.setSymbol(useData.tokens[0]?.symbol)
-      useData.setTokenAddress(useData.tokens[0]?.tokenAddress)
+      useDatas.setFromChainList(BridgeConfig)
+      useDatas.setToChainList(BridgeConfig.filter(item => item.chainName !== useDatas.fromChain))
+      useDatas.setBridgeAddress(BridgeConfig.find(item => item.chainName === useDatas.fromChain)?.bridgeAddress)
+      useDatas.setFromChainID(BridgeConfig.find(item => item.chainName === useDatas.fromChain)?.chainID)
+      useDatas.setToChainID(BridgeConfig.find(item => item.chainName === useDatas.toChain)?.chainID)
+      useDatas.setTokens(BridgeConfig.find(item => item.chainName === useDatas.fromChain)?.tokens)
+      useDatas.setdecimals(BridgeConfig.find(item => item.chainName === useDatas.fromChain)?.tokens[0].decimals)
+      useDatas.setSymbol(useDatas.tokens[0]?.symbol)
+      useDatas.setTokenAddress(useDatas.tokens[0]?.tokenAddress)
     }
     initData()
-  }, [useData.fromChain, useData.toChain, useData.tokens])
+  }, [useDatas.fromChain, useDatas.toChain, useDatas.tokens])
 
   const handleChangeFromChain = e => {
-    useData.setFromChain(e)
-    useData.setToChainList(BridgeConfig.filter(item => item.chainName !== e))
-    useData.setBridgeAddress(BridgeConfig.find(item => item.chainName === e)?.bridgeAddress)
-    useData.setFromChainID(BridgeConfig.find(item => item.chainName === e)?.chainID)
-    useData.setToChain(BridgeConfig.filter(item => item.chainName !== e)[0].chainName)
-    useData.setTokens(BridgeConfig.find(item => item.chainName === e)?.tokens)
-    useData.setdecimals(BridgeConfig.find(item => item.chainName === e)?.tokens[0].decimals)
+    useDatas.setFromChain(e)
+    useDatas.setToChainList(BridgeConfig.filter(item => item.chainName !== e))
+    useDatas.setBridgeAddress(BridgeConfig.find(item => item.chainName === e)?.bridgeAddress)
+    useDatas.setFromChainID(BridgeConfig.find(item => item.chainName === e)?.chainID)
+    useDatas.setToChain(BridgeConfig.filter(item => item.chainName !== e)[0].chainName)
+    useDatas.setTokens(BridgeConfig.find(item => item.chainName === e)?.tokens)
+    useDatas.setdecimals(BridgeConfig.find(item => item.chainName === e)?.tokens[0].decimals)
   }
 
   const handleChangeToChain = e => {
-    useData.setToChain(e)
+    useDatas.setToChain(e)
   }
 
   const handleChangeChain = () => {
-    useData.setFromChain(useData.toChain)
-    useData.setToChain(useData.fromChain)
+    useDatas.setFromChain(useDatas.toChain)
+    useDatas.setToChain(useDatas.fromChain)
   }
 
   const handleChangeToken = e => {
-    useData.setSymbol(e)
-    useData.setTokenAddress(useData.tokens?.find(item => item.symbol === e)?.tokenAddress)
+    useDatas.setSymbol(e)
+    useDatas.setTokenAddress(useDatas.tokens?.find(item => item.symbol === e)?.tokenAddress)
   }
 
   useEffect(() => {
@@ -89,13 +89,13 @@ export const ChooseDirection: React.FC = () => {
         <Col span={11}>
           <Form.Item label="From">
             <Select
-              value={useData.fromChain}
+              value={useDatas.fromChain}
               onChange={e => {
                 handleChangeFromChain(e)
               }}
             >
               {
-                useData.fromChainList.map((item, index) => (
+                useDatas.fromChainList.map((item, index) => (
                   <Option className={styles['seloption']} value={item.chainName} key={index}>
                     <Image src={item.icon} className={styles['select-icon']} preview={false} />{item.title}
                   </Option>
@@ -116,13 +116,13 @@ export const ChooseDirection: React.FC = () => {
         <Col span={11}>
           <Form.Item label="To">
             <Select
-              value={useData.toChain}
+              value={useDatas.toChain}
               onChange={e => {
                 handleChangeToChain(e)
               }}
             >
               {
-                useData.toChainList.map((item, index) => (
+                useDatas.toChainList.map((item, index) => (
                   <Option className={styles['seloption']} value={item.chainName} key={index}>
                     <Image src={item.icon} className={styles['select-icon']} preview={false} />{item.title}
                   </Option>
@@ -137,7 +137,8 @@ export const ChooseDirection: React.FC = () => {
         If you have not add Binance Smart Chain network in your MetaMask yet,<br />
         please click <Button size="small" className={styles['btnAddNetwrol']} onClick={() => {
           addNetWork();
-        }}>Add network</Button> and continue
+        }}>Add network</Button> and continue.
+        
       </Form.Item>
 
       <Form.Item label="Asset"
@@ -148,12 +149,12 @@ export const ChooseDirection: React.FC = () => {
           </div>
         }>
         <Select
-          value={useData.symbol}
+          value={useDatas.symbol}
           placeholder="Binance Smart Chain…"
           onChange={(e) => { handleChangeToken(e) }}
         >
           {
-            useData.tokens.map((item, index) => (
+            useDatas.tokens.map((item, index) => (
               <Option className={styles['seloption']} value={item.symbol} key={index}>
                 <Image src={item.icon} className={styles['select-icon']} preview={false} />{item.symbol}
               </Option>
