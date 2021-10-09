@@ -41,10 +41,12 @@ export function useProvideAuthWallet() {
       window.open('https://metamask.io/download.html')
       return false
     } else {
-      const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
+      // const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
+      const whitelist = ['deoht-3aaaa-aaaah-aapsa-cai'];
       const requestConnect = await (window as any).ic.plug.requestConnect({
         whitelist,
       });
+      console.log('requestConnect',requestConnect)
       if (requestConnect) {
         setAmountLoad(true)
         const principal = await (window as any)?.ic?.plug?.agent?.getPrincipal();
@@ -74,7 +76,6 @@ export function useProvideAuthWallet() {
     });
   }
 
-
   const connectBsc = async () => {
     if (typeof window.ethereum === 'undefined') {
       window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn')
@@ -84,6 +85,7 @@ export function useProvideAuthWallet() {
       setAmountLoad(true)
       window.ethereum.request({ method: 'eth_requestAccounts' })
         .then(accounts => {
+          console.log(accounts);
           setWalletAddress(accounts[0])
           setAuthWalletConnected(true)
           getBscBalance(provider, accounts[0]).then(b => {
