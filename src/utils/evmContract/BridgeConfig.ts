@@ -26,7 +26,7 @@ export const BridgeConfig = [
     title: 'Binance Smart Chain',    
     // bridgeAddress: "0x788a2C1aA08e6AFfC45Bc4Bbb187C8c421696bD3",//local
     bridgeAddress: "0x959e7e27d6ED8E22e156b12fCbE4da062b6A2aE5", 
-    chainID: 1,
+    chainID: 97,
     tokens:
       [
         {

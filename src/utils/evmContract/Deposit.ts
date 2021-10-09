@@ -4,7 +4,7 @@ import Erc20Abi from "./ERC20.json";
 import BridgeAbi from "./Bridge.json";
 import ClaimTestToken from "./ClaimTestToken.json";
 import { ethers, BigNumber, utils } from "ethers";
-
+import { IDL } from "@dfinity/candid";
 import { actorFactory } from "../canisters/actorFactory";
 
 import { _SERVICE as DfinityDepositInterface } from "../canisters/bridge/Bridge.did";
@@ -66,6 +66,21 @@ export const DepositTool = () => {
 
 
   /* ------------------------------ dfinity Approval start ----------------------------- */
+  const buildCallData = (method: String, ...args: Array<any>) => {
+    const depositDataType = IDL.Record({
+      'recipientAddress': IDL.Text,
+      'amount': IDL.Nat,
+    });
+    const argTypes: Array<IDL.Type<any>> = [IDL.Text, IDL.Nat16, depositDataType];
+    const encodeArgs = IDL.encode(argTypes, args);
+    return {
+      'method': method,
+      'args': encodeArgs
+    }
+  }
+
+  let CallData = buildCallData('deposit',[])
+
   const SUB_ACCOUNT_ZERO = Buffer.alloc(32);
   const DEFAULT_SUB_ACCOUNT_ZERO = Array.from(
     new Uint8Array(SUB_ACCOUNT_ZERO)
@@ -130,13 +145,13 @@ export const DepositTool = () => {
     return ethers.utils.hexZeroPad(covertThis, padding);
   };
 
-  const createResourceID = (contractAddress, chainID) => {    
+  const createResourceID = (contractAddress, chainID) => {
     return toHex(contractAddress + toHex(chainID, 2).substr(4), 32)
   };
   const depositOfBsc = async (depositData: depositDataInterface) => {
     console.table(depositData)
     return new Promise(async (resolve, reject) => {
-      let qtyBN = ethers.utils.parseUnits(String(depositData.inputAmount), 1);
+      let qtyBN = ethers.utils.parseUnits(String(depositData.inputAmount), depositData.decimals);
       debugger
       let erc20ResourceID = createResourceID(depositData.tokenAddress, depositData.fromChainID)
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -145,10 +160,10 @@ export const DepositTool = () => {
       const contractWithSigner = contract.connect(signer);
       const data =
         "0x" +
-        utils.hexZeroPad(BigNumber.from(qtyBN).toHexString(),32).substr(2) +
-        utils.hexZeroPad(utils.hexlify((depositData.recipientAddress.length - 2) / 2), 32)
-          .substr(2) +
+        utils.hexZeroPad(BigNumber.from(qtyBN).toHexString(), 32).substr(2) +
+        utils.hexZeroPad(utils.hexlify((depositData.recipientAddress.length - 2) / 2), 32).substr(2) +
         depositData.recipientAddress.substr(2);
+
 
       // console.log(`"${depositData.toChainID}","${erc20ResourceID}","${createERCDepositData(qtyBN, depositData.recipientAddress)}"`)
       contractWithSigner.deposit(
