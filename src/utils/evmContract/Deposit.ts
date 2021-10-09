@@ -66,7 +66,7 @@ export const DepositTool = () => {
 
 
   /* ------------------------------ dfinity Approval start ----------------------------- */
-  const buildCallData = (method: String, ...args: Array<any>) => {
+   const buildCallData = (method: String, ...args: Array<any>) => {
     const depositDataType = IDL.Record({
       'recipientAddress': IDL.Text,
       'amount': IDL.Nat,
@@ -79,14 +79,13 @@ export const DepositTool = () => {
     }
   }
 
-  let CallData = buildCallData('deposit',[])
-
   const SUB_ACCOUNT_ZERO = Buffer.alloc(32);
   const DEFAULT_SUB_ACCOUNT_ZERO = Array.from(
     new Uint8Array(SUB_ACCOUNT_ZERO)
   );
   const approvalOfDfinity = (depositData: depositDataInterface) => {
     console.table(depositData)
+    let resourceID = depositData.bridgeAddress + depositData.fromChainID
     const createDfinityTool = (CANISTER_ID) => actorFactory.createActor<DfinityDftInterface>(dftIdlFactory, CANISTER_ID);
     return new Promise(async (resolve, reject) => {
       createDfinityTool(depositData.bridgeAddress).approve(
@@ -94,7 +93,7 @@ export const DepositTool = () => {
         depositData.bridgeAddress,
         BigInt(depositData.inputAmount) * (BigInt(10) ** BigInt(depositData.decimals)),
         []
-        // type CallData = record {'method':'deposit','args':[]};
+        // buildCallData('deposit',resourceID,depositData.toChainID)
       ).then(res => {
         resolve(res);
       }).catch(err => {
@@ -105,13 +104,13 @@ export const DepositTool = () => {
 
   /* -------------------------- bsc claimTestToken start  --------------------- */
   // 0x11f121fc0D0F080eB8542f7d1965472fe387BA23 local
-  // 0xBb2919Bd1B658a7135bEb3E5430083CC126b49DF
+  // 0x7415E776B809Cc75E1780A0339c015bb0208dA33
   const claimTestToken = () => {
     console.log('claimTestToken')
     return new Promise(async (resolve, reject) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner()
-      let contract = new ethers.Contract('0x11f121fc0D0F080eB8542f7d1965472fe387BA23', ClaimTestToken.abi, provider);
+      let contract = new ethers.Contract('0x7415E776B809Cc75E1780A0339c015bb0208dA33', ClaimTestToken.abi, provider);
       let contractWithSigner = contract.connect(signer);
       contractWithSigner.claim().then(res => {
         resolve(res)
