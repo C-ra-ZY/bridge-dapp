@@ -32,7 +32,6 @@ export const Ibridge: React.FC = () => {
       setUnitDeposite('IICP')
       setUnitReceive('ICP')
     }
-
   }, [authWallet.connectWalletType])
 
   const handleDfinityBtnClick = async () => {
@@ -50,7 +49,7 @@ export const Ibridge: React.FC = () => {
     }
   }
 
-  const handleApproval = () => {
+  const handleApprovalOfBsc = () => {
     if (!approvalState) {
       setApprovalLoading(true)
       depositTool.erc20Approval(bridgeAddress, tokenAddress, inputAmount, decimals).then(async (approveRes: any) => {
@@ -115,14 +114,11 @@ export const Ibridge: React.FC = () => {
   }
 
   const claimTestToken = () => {
-
     depositTool.claimTestToken().then(async (claimTestTokenRes: any) => {
-      console.log('claimTestToken', claimTestTokenRes)
       if(claimTestTokenRes.hash){
         message.success('success');
       }
     }).catch(err => {
-      console.log(err)
       message.error('error')
     })
   }
@@ -204,7 +200,7 @@ export const Ibridge: React.FC = () => {
                                 approvalState ? styles['btn-gray'] : styles['btn-approving']
                               }
                               onClick={() => {
-                                handleApproval()
+                                handleApprovalOfBsc()
                               }}
                             >
                               Approving

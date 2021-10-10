@@ -63,6 +63,8 @@ export const DepositConfirm: React.FC<propsType> = ({ visible, fee, receive, uni
         
       }).catch(err =>{
         console.log(err)
+        setDepositResult(false);
+        setDepositResultSuccess(false);
       })
       /* depositTool.depositOfDfinity(depositData).then(res => {
         console.log('res of Dfinity', res)
@@ -85,9 +87,9 @@ export const DepositConfirm: React.FC<propsType> = ({ visible, fee, receive, uni
         setDepositResultSuccess(false);
       }) */
     } else {
-      depositTool.depositOfBsc(depositData).then(res => {
+      depositTool.depositOfBsc(depositData).then((res:any) => {
         console.log('res of BSC', res)
-        if (res) {
+        if (res.hash) {
           setDepositResult(false);
           setDepositResultSuccess(true);
         } else {
@@ -103,11 +105,11 @@ export const DepositConfirm: React.FC<propsType> = ({ visible, fee, receive, uni
     }
   }
 
-
   return (
     <Modal width={420} className="modalcon" visible={visible} footer={false}
       onCancel={() => {
         hide?.();
+        setDepositResult(true)
         setDepositLoading(false)
       }}
     >
@@ -135,7 +137,7 @@ export const DepositConfirm: React.FC<propsType> = ({ visible, fee, receive, uni
               <Button size="large" block className={styles.btn}
                 onClick={() => {
                   createDeposit()
-                }}>Confirm Deposite</Button>
+                }}>Confirm Deposit</Button>
             </div>
           </>
           :

@@ -26,7 +26,7 @@ export interface DepositInterface {
   approvalBsc: boolean;
 }
 
-export interface CallData { 'method': string, 'args': Array<number> }
+// export interface CallData { 'method': string, 'args': Array<number> }
 
 export interface depositDataInterface {
   bridgeAddress: string;
@@ -41,7 +41,6 @@ export interface depositDataInterface {
 
 export const DepositTool = () => {
   const [approvalBsc, setApprovalBsc] = useState(false)
-
 
   /* -------------------------- dfinity deposit start --------------------- */
   const depositOfDfinity = (depositData: depositDataInterface) => {
@@ -93,7 +92,7 @@ export const DepositTool = () => {
         depositData.bridgeAddress,
         BigInt(depositData.inputAmount) * (BigInt(10) ** BigInt(depositData.decimals)),
         []
-        // buildCallData('deposit',resourceID,depositData.toChainID)
+        // buildCallData('deposit',[resourceID,depositData.toChainID])
       ).then(res => {
         resolve(res);
       }).catch(err => {
@@ -103,14 +102,14 @@ export const DepositTool = () => {
   }
 
   /* -------------------------- bsc claimTestToken start  --------------------- */
-  // 0x11f121fc0D0F080eB8542f7d1965472fe387BA23 local
+  // 0x12e70d1e994250EC6aDa292120E9596FFa4039ba local
   // 0x7415E776B809Cc75E1780A0339c015bb0208dA33
   const claimTestToken = () => {
     console.log('claimTestToken')
     return new Promise(async (resolve, reject) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner()
-      let contract = new ethers.Contract('0x7415E776B809Cc75E1780A0339c015bb0208dA33', ClaimTestToken.abi, provider);
+      let contract = new ethers.Contract('0x3cEA2619AbD37A9480C6372fEa7160830F340E89', ClaimTestToken.abi, provider);
       let contractWithSigner = contract.connect(signer);
       contractWithSigner.claim().then(res => {
         resolve(res)
@@ -129,7 +128,7 @@ export const DepositTool = () => {
       const signer = provider.getSigner();
       const contract = new ethers.Contract(tokenAddress, Erc20Abi.abi, provider);
       const contractWithSigner = contract.connect(signer);
-      contractWithSigner.approve(bridgeAddress, qtyBN).then(txRes => {
+      contractWithSigner.approve('0x7a22AF7F0226718f768593f8BFa54b9a23F1D636', qtyBN).then(txRes => {
         resolve(txRes);
       }).catch(err => {
         console.log("approve error", err)
@@ -139,11 +138,9 @@ export const DepositTool = () => {
   }
 
   /* -------------------------- bsc deposit start --------------------- */
-
   const toHex = (covertThis: any, padding: number) => {
     return ethers.utils.hexZeroPad(covertThis, padding);
   };
-
   const createResourceID = (contractAddress, chainID) => {
     return toHex(contractAddress + toHex(chainID, 2).substr(4), 32)
   };
@@ -151,7 +148,6 @@ export const DepositTool = () => {
     console.table(depositData)
     return new Promise(async (resolve, reject) => {
       let qtyBN = ethers.utils.parseUnits(String(depositData.inputAmount), depositData.decimals);
-      debugger
       let erc20ResourceID = createResourceID(depositData.tokenAddress, depositData.fromChainID)
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
@@ -162,14 +158,10 @@ export const DepositTool = () => {
         utils.hexZeroPad(BigNumber.from(qtyBN).toHexString(), 32).substr(2) +
         utils.hexZeroPad(utils.hexlify((depositData.recipientAddress.length - 2) / 2), 32).substr(2) +
         depositData.recipientAddress.substr(2);
-
-
-      // console.log(`"${depositData.toChainID}","${erc20ResourceID}","${createERCDepositData(qtyBN, depositData.recipientAddress)}"`)
       contractWithSigner.deposit(
         depositData.toChainID,
         erc20ResourceID,
         data
-        // createERCDepositData(qtyBN, depositData.recipientAddress)
       ).then((res) => {
         resolve(res)
       }).catch(e => {

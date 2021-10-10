@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import { actorFactory } from '../canisters/actorFactory'
+import React, { useContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
 declare const window: any;
 
@@ -7,7 +6,7 @@ export interface AuthWalletContextInterface {
   isAuthWalletConnected: boolean;
   connectPanelVisible: boolean;
   walletAddress: string;
-  connectWalletType:string;
+  connectWalletType: string;
   setConnectWalletType: (arg0: string) => void;
   setAuthWalletConnected: (arg0: boolean) => void;
   setConnectPanelVisible: (arg0: boolean, arg1?: () => void) => void;
@@ -29,45 +28,108 @@ export function useProvideAuthWallet() {
   const [amount, setAmount] = useState<string>('')
   const [amountLoad, setAmountLoad] = useState<boolean>(false)
 
-  const getPlugAssets = async () => {
-    const requestBalance = await (window as any).ic.plug.requestBalance();
-    console.log(`requestBalance`, requestBalance);
+  useEffect(() => {
+    getCurrentAccountOfBsc().then((res: any) => {
+      if (res.connected) {
+        console.log(`BSC connection is ${res.connected}`);
+        setAmountLoad(true)
+        setAuthWalletConnected(true);
+        setConnectWalletType('binance')
+        setWalletAddress(res.account)
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        getBscBalance(provider, res.account).then(b => {
+          let str: string = Number(b).toFixed(4)
+          setAmount(str)
+          setAmountLoad(false)
+        });
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
+      const result = await window.ic.plug.isConnected({
+        whitelist
+      });
+      console.log(`Plug connection is ${result}`);
+    })()
+  }, [])
+
+  /*  useEffect(() => {
+     verifyConnectionAndAgent();
+   }, []);
+  */
+  /*  const verifyConnectionAndAgent = async () => {
+     const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
+     const connected = await window.ic.plug.isConnected();
+     if (!connected) await window.ic.plug.requestConnect({ whitelist });
+     if (connected && !window.ic.plug.agent) {
+       await window.ic.plug.createAgent({ whitelist })
+     }
+   }; */
+
+  const getPlugAssets = async()=> {
+    const response = await window.ic?.plug?.requestBalance();
+    console.log(response);
     setAmountLoad(false)
-    return requestBalance[0].amount.toFixed(4);
+    setAmount(response[0].amount.toFixed(4))
   }
 
   const connectPlugWallet = async () => {
+    console.log('connect Plug')
     if (typeof (window as any).ic === 'undefined') {
-      window.open('https://metamask.io/download.html')
+      window.open('https://plugwallet.ooo/')
       return false
     } else {
-      // const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
-      const whitelist = ['deoht-3aaaa-aaaah-aapsa-cai'];
-      const requestConnect = await (window as any).ic.plug.requestConnect({
-        whitelist,
+      const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
+      const requestConnect = await window.ic?.plug?.requestConnect({
+        whitelist
       });
-      console.log('requestConnect',requestConnect)
       if (requestConnect) {
         setAmountLoad(true)
-        const principal = await (window as any)?.ic?.plug?.agent?.getPrincipal();
+        const principal = await window.ic?.plug?.agent.getPrincipal();
         setAuthWalletConnected(true)
-        console.log('PlugWallet', principal.toHex())
-        await actorFactory.authenticateActor
         setWalletAddress(principal.toHex())
         setLoadings(false)
         setConnectWalletType('dfinity')
-        setAmount(await getPlugAssets())
+        // await getPlugAssets()
+        setTimeout(()=>{
+          getPlugAssets()
+        },100)
       } else {
         console.log(`The Connection was denied!`);
       }
     }
+  }
+  /* ------------------------------ bsc auth ---------------------------------------- */
+  const getCurrentAccountOfBsc = () => {
+    return new Promise(async (resolve, reject) => {
+      if (typeof window.ethereum === 'undefined') {
+        resolve({ connected: false, account: "" });
+      } else if (window.ethereum) {
+        window.ethereum.request({ method: 'eth_accounts' })
+          .then(accounts => {
+            if (accounts.length === 0) {
+              resolve({ connected: false, account: "" });
+            } else {
+              resolve({ connected: true, account: accounts[0] });
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      }
+    });
   }
 
   const getBscBalance = (provider, addr) => {
     return new Promise(async (resolve, reject) => {
       try {
         let balance = await provider.getBalance(addr);
-        console.log('bscbalance',ethers.utils.formatEther(balance))
+        console.log('bscbalance', ethers.utils.formatEther(balance))
         resolve(ethers.utils.formatEther(balance));
       }
       catch (err) {
@@ -99,7 +161,7 @@ export function useProvideAuthWallet() {
         .catch((err) => {
           console.error(err);
         });
-      
+
     }
   }
 
@@ -116,8 +178,8 @@ export function useProvideAuthWallet() {
     isAuthWalletConnected: isAuthWalletConnected,
     connectPanelVisible: connectPanelVisible,
     walletAddress: walletAddress,
-    connectWalletType:connectWalletType,
-    amountLoad:amountLoad,
+    connectWalletType: connectWalletType,
+    amountLoad: amountLoad,
     setConnectWalletType,
     setAuthWalletConnected,
     setConnectPanelVisible,
