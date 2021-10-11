@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './DepositConfirm.module.css'
-import { Button, Col, Modal, Row } from 'antd';
+import { Button, Col, message, Modal, Row } from 'antd';
 import { useAuthWallet } from '../../utils/authWallet/AuthWallet';
 import { ArrowUpOutlined, CloseOutlined } from '@ant-design/icons';
 import { DepositTool, depositDataInterface } from "../../utils/evmContract/Deposit";
@@ -24,19 +24,6 @@ export const DepositConfirm: React.FC<propsType> = ({ visible, fee, receive, uni
   const { ...depositTool } = DepositTool();
   const { bridgeAddress, tokenAddress, inputAmount, fromChainID, toChainID, decimals, recipientAddress } = useDepositData();
 
-  /*  useEffect(() => {
-     console.table({
-       'bridgeAddress': bridgeAddress,
-       'tokenAddress': tokenAddress,
-       'recipientAddress': recipientAddress,
-       'resourceID': bridgeAddress + fromChainID,
-       'decimals': decimals,
-       'fromChainID': fromChainID,
-       'toChainID': toChainID,
-       'inputAmount': inputAmount
-     })
-   }, [depositLoading]) */
-
   const handleShare = () => {
     if (authWallet.connectWalletType === 'dfinity') {
       window.open(`https://ic.rocks/account/${authWallet.walletAddress}`)
@@ -58,42 +45,29 @@ export const DepositConfirm: React.FC<propsType> = ({ visible, fee, receive, uni
       walletAddress: authWallet.walletAddress,
     }
     if (authWallet.connectWalletType === 'dfinity') {
-      depositTool.approvalOfDfinity(depositData).then(res=>{
+      depositTool.approvalOfDfinity(depositData).then((res: any) => {
         console.log('res of approvalOfDfinity', res)
-        
-      }).catch(err =>{
+        if (typeof res === 'object' && res !== null) {
+          setDepositResult(false);
+          if(res.Err){
+            setDepositResultSuccess(false);
+            message.error(res.Err)
+          }else{            
+            setDepositResultSuccess(true);
+          }
+        }
+      }).catch(err => {
         console.log(err)
         setDepositResult(false);
         setDepositResultSuccess(false);
       })
-      /* depositTool.depositOfDfinity(depositData).then(res => {
-        console.log('res of Dfinity', res)
-        if (typeof res === 'object' && res !== null) {
-          let keys = Object.keys(res)
-          keys.forEach(ele => {
-            if (ele !== 'Ok') {
-              setDepositResult(false);
-              setDepositResultSuccess(false);
-            } else {
-              console.log('depositOfDfinity Err', res)
-              setDepositResult(false);
-              setDepositResultSuccess(true);
-            }
-          });
-        }
-      }).catch(err => {
-        console.log("catch depositOfDfinity", err)
-        setDepositResult(false);
-        setDepositResultSuccess(false);
-      }) */
     } else {
-      depositTool.depositOfBsc(depositData).then((res:any) => {
+      depositTool.depositOfBsc(depositData).then((res: any) => {
         console.log('res of BSC', res)
-        if (res.hash) {
-          setDepositResult(false);
+        setDepositResult(false);
+        if (res.hash) {          
           setDepositResultSuccess(true);
         } else {
-          setDepositResult(false);
           setDepositResultSuccess(false);
         }
         resetApprovalState()
@@ -155,7 +129,7 @@ export const DepositConfirm: React.FC<propsType> = ({ visible, fee, receive, uni
                 <h3 className={styles.donedesc} onClick={() => { handleShare() }}>View on Binance Smart Chain Explore</h3>
               </div>
               :
-              <div className={styles.result} style={{paddingBottom:0}}>
+              <div className={styles.result} style={{ paddingBottom: 0 }}>
                 <div className={styles.errorIcon}><CloseOutlined /></div>
                 <h3 className={styles.errortitle}>Transaction reject</h3>
                 <div className={styles['btn-wrap']}>

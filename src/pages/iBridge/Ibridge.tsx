@@ -38,10 +38,14 @@ export const Ibridge: React.FC = () => {
     if (!authWallet.isAuthWalletConnected) {
       authWallet.setConnectPanelVisible(true)
     } else {
+      console.table({ 'amount': authWallet.amount, 'inputAmount': inputAmount })
+      console.log(inputAmount > parseFloat(authWallet.amount))
       if (recipientAddress === '') {
-        alert('The Destination Address is empty')
+        message.error('The Destination Address is empty')
       } else if (!inputAmount || inputAmount == 0) {
-        alert('Amount is empty')
+        message.error('Amount is empty')
+      } else if (inputAmount > parseFloat(authWallet.amount)) {
+        message.error('insufficient balance')
       } else {
         console.log('inputAmount', inputAmount)
         setDepositConfirmVisible(true)
@@ -53,12 +57,10 @@ export const Ibridge: React.FC = () => {
     if (!approvalState) {
       setApprovalLoading(true)
       depositTool.erc20Approval(bridgeAddress, tokenAddress, inputAmount, decimals).then(async (approveRes: any) => {
-        console.log(approveRes)
         try {
           if (approveRes.hash) {
             setApprovalState(true)
             setApprovalLoading(false)
-            // await authWallet.getPlugAssets()
           }
         } catch (error) {
           console.log(error)
@@ -75,10 +77,10 @@ export const Ibridge: React.FC = () => {
     if (!approvalState) {
       return false
     } else {
-      if (recipientAddress === '') {
-        alert('The Destination Address is empty')
-      } else if (!inputAmount || inputAmount == 0) {
-        alert('Amount is empty')
+      if (!inputAmount || inputAmount == 0) {
+        message.error('Amount is empty')
+      } else if (recipientAddress === '') {
+        message.error('The Destination Address is empty')
       } else {
         setDepositConfirmVisible(true)
       }
@@ -115,7 +117,7 @@ export const Ibridge: React.FC = () => {
 
   const claimTestToken = () => {
     depositTool.claimTestToken().then(async (claimTestTokenRes: any) => {
-      if(claimTestTokenRes.hash){
+      if (claimTestTokenRes.hash) {
         message.success('success');
       }
     }).catch(err => {
@@ -159,7 +161,6 @@ export const Ibridge: React.FC = () => {
                       </Button>
                     } />
                   </Form.Item>
-
                   <Form.Item label="Destination Address" name="DestinationAddress" extra={
                     <div className={styles['form-extra-text']}>
                       This is the destination address of the To network
@@ -169,7 +170,6 @@ export const Ibridge: React.FC = () => {
                       setRecipientAddress(e.target.value)
                     }} />
                   </Form.Item>
-
                   {
                     authWallet.connectWalletType === 'dfinity'
                       ?

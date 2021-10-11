@@ -24,9 +24,8 @@ export const BridgeConfig = [
     chainName: 'binance',
     icon: coinBinance,
     title: 'Binance Smart Chain',    
-    bridgeAddress: "0x5F81DA37FDF2172C26096B7e07141791bA2Bbda1",//local
-    // bridgeAddress: "0x45e306DDEA10fF1C2bFf232677253Bdd7162d293", 
-    HandlerAddress:'0x7a22AF7F0226718f768593f8BFa54b9a23F1D636',
+    bridgeAddress: "0xeB9C66252F435f0Db5DfA1bCA0269Fa334265a2c", 
+    handlerAddress:'0x82F24c9Ad55B20BDd2eaB8AD892032ee506aE490',
     chainID: 1,
     tokens:
       [
@@ -35,8 +34,7 @@ export const BridgeConfig = [
           "symbol": 'IICP',
           "name": 'IICP',
           "icon": coinDfinity,
-          "tokenAddress": '0x0440a488aE356753B5ef20bcbf3F1557E62E81c3'//local
-          // "tokenAddress": '0xa80cc30bd328EE0b2b61C3aCCa8366E659f4b31e'
+          "tokenAddress": '0xB97A8c33556C57747725becf41Faa1b463A93F24'
         }
       ]
   },

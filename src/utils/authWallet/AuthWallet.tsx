@@ -25,84 +25,95 @@ export function useProvideAuthWallet() {
   const [walletAddress, setWalletAddress] = useState<string>('...')
   const [connectWalletType, setConnectWalletType] = useState<string>('dfinity')
   const [loadings, setLoadings] = useState(false)
-  const [amount, setAmount] = useState<string>('')
+  const [amount, setAmount] = useState<string>('0')
   const [amountLoad, setAmountLoad] = useState<boolean>(false)
+  const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
 
   useEffect(() => {
-    getCurrentAccountOfBsc().then((res: any) => {
-      if (res.connected) {
-        console.log(`BSC connection is ${res.connected}`);
-        setAmountLoad(true)
-        setAuthWalletConnected(true);
-        setConnectWalletType('binance')
-        setWalletAddress(res.account)
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        getBscBalance(provider, res.account).then(b => {
-          let str: string = Number(b).toFixed(4)
-          setAmount(str)
-          setAmountLoad(false)
-        });
+    let checkConnect = localStorage.getItem('lastConnectType')
+    if (checkConnect) {
+      if (checkConnect === 'binance') {
+        getCurrentAccountOfBsc().then((res: any) => {
+          if (res.connected) {
+            console.log(`BSC connection is ${res.connected}`);
+            setAmountLoad(true)
+            setAuthWalletConnected(true);
+            setConnectWalletType('binance')
+            setWalletAddress(res.account)
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            getBscBalance(provider, res.account).then(b => {
+              let str: string = Number(b).toFixed(4)
+              setAmount(str)
+              setAmountLoad(false)
+            });
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      } else if(checkConnect === 'dfinity') {
+        getCurrentAccountOfDfinity().then(async (res:any)=>{
+          if (res.connected){
+            console.log(`Dfinity connection is ${res.connected}`);
+            setAmountLoad(true)
+            setAuthWalletConnected(true);
+            setConnectWalletType('dfinity')
+            setWalletAddress(res.account)
+            setTimeout(() => {
+              getPlugAssets()
+            }, 1000)
+          }
+        })
       }
-    }).catch(err => {
-      console.log(err)
-    })
+    }
   }, [])
 
-  useEffect(() => {
-    (async () => {
-      const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
-      const result = await window.ic.plug.isConnected({
-        whitelist
-      });
-      console.log(`Plug connection is ${result}`);
-    })()
-  }, [])
-
-  /*  useEffect(() => {
-     verifyConnectionAndAgent();
-   }, []);
-  */
-  /*  const verifyConnectionAndAgent = async () => {
-     const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
-     const connected = await window.ic.plug.isConnected();
-     if (!connected) await window.ic.plug.requestConnect({ whitelist });
-     if (connected && !window.ic.plug.agent) {
-       await window.ic.plug.createAgent({ whitelist })
-     }
-   }; */
-
-  const getPlugAssets = async()=> {
+  const getPlugAssets = async () => {
     const response = await window.ic?.plug?.requestBalance();
-    console.log(response);
-    setAmountLoad(false)
+    console.log(response)
     setAmount(response[0].amount.toFixed(4))
+    setAmountLoad(false)
   }
-
   const connectPlugWallet = async () => {
-    console.log('connect Plug')
     if (typeof (window as any).ic === 'undefined') {
       window.open('https://plugwallet.ooo/')
       return false
-    } else {
-      const whitelist = ['qoctq-giaaa-aaaaa-aaaea-cai'];
+    } else {      
       const requestConnect = await window.ic?.plug?.requestConnect({
         whitelist
       });
       if (requestConnect) {
         setAmountLoad(true)
-        const principal = await window.ic?.plug?.agent.getPrincipal();
+        const principalId = await window.ic?.plug?.agent.getPrincipal();
         setAuthWalletConnected(true)
-        setWalletAddress(principal.toHex())
+        setWalletAddress(principalId.toHex())
         setLoadings(false)
+        localStorage.setItem('lastConnectType', 'dfinity')
         setConnectWalletType('dfinity')
-        // await getPlugAssets()
-        setTimeout(()=>{
+        setTimeout(() => {
           getPlugAssets()
-        },100)
+        }, 1000)
       } else {
         console.log(`The Connection was denied!`);
       }
     }
+  }
+
+  const getCurrentAccountOfDfinity = () => {
+    return new Promise(async (resolve, reject) => {
+      if (typeof (window as any).ic === 'undefined'){
+        resolve({ connected: false, account: "" });
+      } else {
+        const connected = await window.ic.plug.isConnected();
+        // if (!connected)  await window.ic?.plug?.requestConnect({ whitelist });
+        if (connected && !window.ic.plug.agent) {
+          await window.ic?.plug?.createAgent({ whitelist })
+          const principalId = await window.ic?.plug?.agent.getPrincipal();
+          resolve({ connected: true, account: principalId.toHex() });
+        }else{
+          resolve({ connected: false, account: "" });
+        }
+      }
+    });
   }
   /* ------------------------------ bsc auth ---------------------------------------- */
   const getCurrentAccountOfBsc = () => {
@@ -155,6 +166,7 @@ export function useProvideAuthWallet() {
             setAmount(str)
             setAmountLoad(false)
           });
+          localStorage.setItem('lastConnectType', 'binance')
           setConnectWalletType('binance')
           setLoadings(false)
         })

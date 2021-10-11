@@ -7,9 +7,6 @@ import { ethers, BigNumber, utils } from "ethers";
 import { IDL } from "@dfinity/candid";
 import { actorFactory } from "../canisters/actorFactory";
 
-import { _SERVICE as DfinityDepositInterface } from "../canisters/bridge/Bridge.did";
-import { idlFactory as bridgeIdlFactory } from "../canisters/bridge/did";
-
 import { _SERVICE as DfinityDftInterface } from "../canisters/dft/dft_rs.did";
 import { idlFactory as dftIdlFactory } from "../canisters/dft/did";
 
@@ -26,8 +23,6 @@ export interface DepositInterface {
   approvalBsc: boolean;
 }
 
-// export interface CallData { 'method': string, 'args': Array<number> }
-
 export interface depositDataInterface {
   bridgeAddress: string;
   fromChainID: number;
@@ -42,30 +37,9 @@ export interface depositDataInterface {
 export const DepositTool = () => {
   const [approvalBsc, setApprovalBsc] = useState(false)
 
-  /* -------------------------- dfinity deposit start --------------------- */
-  const depositOfDfinity = (depositData: depositDataInterface) => {
-    console.table(depositData)
-    let resourceID = depositData.bridgeAddress + depositData.fromChainID
-    const createDfinityTool = (CANISTER_ID) => actorFactory.createActor<DfinityDepositInterface>(bridgeIdlFactory, CANISTER_ID);
-    return new Promise(async (resolve, reject) => {
-      createDfinityTool(depositData.bridgeAddress).deposit(
-        resourceID,
-        depositData.toChainID,
-        {
-          recipientAddress: depositData.recipientAddress,
-          amount: BigInt(depositData.inputAmount) * (BigInt(10) ** BigInt(depositData.decimals))
-        }
-      ).then(res => {
-        resolve(res);
-      }).catch(err => {
-        reject(err);
-      })
-    });
-  }
-
 
   /* ------------------------------ dfinity Approval start ----------------------------- */
-   const buildCallData = (method: String, ...args: Array<any>) => {
+  const buildCallData = (method: string, ...args: Array<any>) => {
     const depositDataType = IDL.Record({
       'recipientAddress': IDL.Text,
       'amount': IDL.Nat,
@@ -73,11 +47,11 @@ export const DepositTool = () => {
     const argTypes: Array<IDL.Type<any>> = [IDL.Text, IDL.Nat16, depositDataType];
     const encodeArgs = IDL.encode(argTypes, args);
     return {
-      'method': method,
-      'args': encodeArgs
+      method: method,
+      args: Array.from(new Uint8Array(encodeArgs.buffer))
     }
   }
-
+  // export interface CallData { 'method': string, 'args': Array<number> }
   const SUB_ACCOUNT_ZERO = Buffer.alloc(32);
   const DEFAULT_SUB_ACCOUNT_ZERO = Array.from(
     new Uint8Array(SUB_ACCOUNT_ZERO)
@@ -85,14 +59,23 @@ export const DepositTool = () => {
   const approvalOfDfinity = (depositData: depositDataInterface) => {
     console.table(depositData)
     let resourceID = depositData.bridgeAddress + depositData.fromChainID
+    let calldata = buildCallData(
+      'deposit',
+      resourceID,
+      depositData.toChainID,
+      {
+        recipientAddress: depositData.recipientAddress,
+        amount: BigInt(depositData.inputAmount) * (BigInt(10) ** BigInt(depositData.decimals))
+      }
+    )
+
     const createDfinityTool = (CANISTER_ID) => actorFactory.createActor<DfinityDftInterface>(dftIdlFactory, CANISTER_ID);
     return new Promise(async (resolve, reject) => {
-      createDfinityTool(depositData.bridgeAddress).approve(
+      createDfinityTool(depositData.tokenAddress).approve(
         [DEFAULT_SUB_ACCOUNT_ZERO],
-        depositData.bridgeAddress,
+        depositData.tokenAddress,
         BigInt(depositData.inputAmount) * (BigInt(10) ** BigInt(depositData.decimals)),
-        []
-        // buildCallData('deposit',[resourceID,depositData.toChainID])
+        [calldata]
       ).then(res => {
         resolve(res);
       }).catch(err => {
@@ -102,14 +85,12 @@ export const DepositTool = () => {
   }
 
   /* -------------------------- bsc claimTestToken start  --------------------- */
-  // 0x12e70d1e994250EC6aDa292120E9596FFa4039ba local
-  // 0x7415E776B809Cc75E1780A0339c015bb0208dA33
   const claimTestToken = () => {
     console.log('claimTestToken')
     return new Promise(async (resolve, reject) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner()
-      let contract = new ethers.Contract('0x3cEA2619AbD37A9480C6372fEa7160830F340E89', ClaimTestToken.abi, provider);
+      let contract = new ethers.Contract('0x842517265677970D8A7F2D409e25E02e959220e8', ClaimTestToken.abi, provider);
       let contractWithSigner = contract.connect(signer);
       contractWithSigner.claim().then(res => {
         resolve(res)
@@ -121,14 +102,22 @@ export const DepositTool = () => {
 
   /* -------------------------- bsc erc20Approval start  --------------------- */
   const erc20Approval = (bridgeAddress, tokenAddress, qty, decimals) => {
-    console.table({ bridgeAddress: bridgeAddress, tokenAddress: tokenAddress, qty: qty, decimals: decimals })
+    const handlerAddress = '0x82F24c9Ad55B20BDd2eaB8AD892032ee506aE490';
+    console.table({
+      bridgeAddress: bridgeAddress,
+      tokenAddress: tokenAddress,
+      handlerAddress: handlerAddress,
+      qty: qty,
+      decimals: decimals
+    })
+
     return new Promise(async (resolve, reject) => {
       let qtyBN = ethers.utils.parseUnits(String(qty), decimals);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(tokenAddress, Erc20Abi.abi, provider);
       const contractWithSigner = contract.connect(signer);
-      contractWithSigner.approve('0x7a22AF7F0226718f768593f8BFa54b9a23F1D636', qtyBN).then(txRes => {
+      contractWithSigner.approve(handlerAddress, qtyBN).then(txRes => {
         resolve(txRes);
       }).catch(err => {
         console.log("approve error", err)
@@ -158,6 +147,8 @@ export const DepositTool = () => {
         utils.hexZeroPad(BigNumber.from(qtyBN).toHexString(), 32).substr(2) +
         utils.hexZeroPad(utils.hexlify((depositData.recipientAddress.length - 2) / 2), 32).substr(2) +
         depositData.recipientAddress.substr(2);
+
+        console.log('resourceID',erc20ResourceID)
       contractWithSigner.deposit(
         depositData.toChainID,
         erc20ResourceID,
@@ -178,7 +169,6 @@ export const DepositTool = () => {
   return {
     approvalOfDfinity,
     depositOfBsc,
-    depositOfDfinity,
     calculateFee,
     erc20Approval,
     setApprovalBsc,
@@ -186,36 +176,3 @@ export const DepositTool = () => {
     approvalBsc: approvalBsc
   }
 }
-
-
-
-/*
-  const createContractWithSigner = (bridgeAddress) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(bridgeAddress, Erc20Abi.abi, provider);
-    const contractWithSigner = contract.connect(signer);
-    return contractWithSigner
-  }
-*/
-/*
-  // -------------------------- bsc voteOfBsc start ---------------------
-  const voteOfBsc = (depositData: depositDataInterface) => {
-    return new Promise(async (resolve, reject) => {
-      let erc20ResourceID = createResourceID(depositData.tokenAddress, depositData.fromChainID)
-      let dataHash = sha256(depositData.recipientAddress)
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(depositData.bridgeAddress, Erc20Abi.abi, provider);
-      const contractWithSigner = contract.connect(signer);
-      contractWithSigner.voteProposal(
-        depositData.fromChainID,
-        erc20ResourceID,
-        dataHash
-      ).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    });
-  } */
